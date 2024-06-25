@@ -6,18 +6,14 @@
 //
 
 import SwiftUI
-import NostrSDK
-import LibWally
+
 
 enum SendNavigationLinkValues: Hashable, View {
-    static func == (lhs: SendNavigationLinkValues, rhs: SendNavigationLinkValues) -> Bool {
-        return true
-    }
     
     case selectInputsSendView(utxos: [Utxo],
                               invoice: Invoice)
     
-    case sendUtxoView(utxos: [Utxo], 
+    case sendUtxoView(utxos: [Utxo],
                       invoice: Invoice,
                       utxosToConsume: [Utxo])
     
@@ -43,7 +39,7 @@ enum SendNavigationLinkValues: Hashable, View {
             
         case .sendUtxoView(let utxos, let invoice, let utxosToConsume):
             
-            SendUtxoView(utxos: utxos, 
+            SendUtxoView(utxos: utxos,
                          invoice: invoice,
                          utxosToConsume: utxosToConsume)
             

@@ -11,6 +11,7 @@ import SwiftUI
 
 
 struct BroadcastView: View, DirectMessageEncrypting {
+    @EnvironmentObject private var sendNavigator: Navigator
     @State private var txid: String?
     @State private var sending = false
     @State private var showError = false
@@ -24,13 +25,6 @@ struct BroadcastView: View, DirectMessageEncrypting {
     let ourNostrPrivateKey: String
     let recipientsPubkey: String
     
-    
-//    init(hexstring: String, invoice: Invoice, ourKeypair: Keypair, recipientsPubkey: PublicKey) {
-//        self.hexstring = hexstring
-//        self.invoice = invoice
-//        self.ourKeypair = ourKeypair
-//        self.recipientsPubkey = recipientsPubkey
-//    }
     
     var body: some View {
         if txid == nil {
@@ -147,7 +141,7 @@ struct BroadcastView: View, DirectMessageEncrypting {
                     Spacer()
                     
                     Button {
-                        //self.presentationMode.wrappedValue.dismiss()
+                        sendNavigator.path.removeLast(sendNavigator.path.count)
                     } label: {
                         Text("Done")
                     }

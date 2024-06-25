@@ -11,7 +11,7 @@ import NostrSDK
 import LibWally
 
 struct SendUtxoView: View, DirectMessageEncrypting {
-    //@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var sendNavigator: Navigator
     private let urlString = UserDefaults.standard.string(forKey: "nostrRelay") ?? "wss://relay.damus.io"
     @State private var spendableBalance = 0.0
     @State private var signedRawTx: String?
@@ -41,10 +41,16 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                let ourKeypair = ourKeypair,
                let recipientsPubkey = recipientsPubkey {
                 
-                NavigationLink(value: SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx, invoice: invoice, ourNostrPrivKey: ourKeypair.privateKey.hex, recipientsPubkey: recipientsPubkey.hex, psbtProposalString: signedPsbt.description)) {
-                    Text("View the signed PSBT Proposal")
-                }
-                
+                Button("", action: {})
+                    .onAppear {
+                        sendNavigator.path.append(
+                            SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
+                                                                        invoice: invoice,
+                                                                        ourNostrPrivKey: ourKeypair.privateKey.hex,
+                                                                        recipientsPubkey: recipientsPubkey.hex,
+                                                                        psbtProposalString: signedPsbt.description)
+                        )
+                    }
             } else {
                 Button("", action: {})
                 .onAppear {

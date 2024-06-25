@@ -12,7 +12,6 @@ import SwiftUICoreImage
 import LibWally
 
 struct SendView: View, DirectMessageEncrypting {
-    @State private var navPath = NavigationPath()
     @State private var uploadedInvoice: Invoice?
     @State private var invoiceUploaded = false
     @State private var showUtxos = false

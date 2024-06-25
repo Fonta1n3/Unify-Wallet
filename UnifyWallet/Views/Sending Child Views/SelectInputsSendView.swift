@@ -55,37 +55,11 @@ struct SelectInputsSendView: View {
                     } else {
                         Text("Select more utxos to satisfy invoice amount.")
                     }
-                    
-    //                Button {
-    //                    var totalAmtSelected = 0.0
-    //
-    //                    for utxo in selection {
-    //                        print("selected utxo: \(utxo.address! + " " + utxo.amount!.btcBalanceWithSpaces)")
-    //                        totalAmtSelected += utxo.amount!
-    //                        selectedUtxosToConsume.append(utxo)
-    //                    }
-    //
-    //                    if totalAmtSelected > invoice.amount! {
-    //                        //payInvoice(invoice: invoice, selectedUtxos: selectedUtxosToConsume, utxos: utxos)
-    //
-    //
-    //                    } else {
-    //                        showError(desc: "Select more utxos to cover invoice amount.")
-    //                    }
-    //                } label: {
-    //                    Text("Payjoin \(selection.count) utxos")
-    //                }
-    //                .buttonStyle(.bordered)
-    //
-    //                NavigationLink(value: SendNavigationLinkValues.sendUtxoView(utxos: utxos, invoice: invoice, automaticInputSelection: false)) {
-    //                    Text("Pay now")
-    //                }
                 }
                 .onChange(of: selection) {
                     totalAmtSelected = 0.0
                     
                     for utxo in selection {
-                        print("selected utxo: \(utxo.address! + " " + utxo.amount!.btcBalanceWithSpaces)")
                         totalAmtSelected += utxo.amount!
                         selectedUtxosToConsume.append(utxo)
                     }

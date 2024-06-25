@@ -11,13 +11,11 @@ import NostrSDK
 struct HomeView: View {
     @State private var showNotSavedAlert = false
     @State private var showSavedAlert = false
-
+    @StateObject private var sendNavigator = Navigator()
     
     var body: some View {
-        //NavigationStack() {
-            //List() {
         TabView() {
-            NavigationStack {
+            NavigationStack() {
                 ReceiveView()
             }
             .tabItem {
@@ -29,7 +27,11 @@ struct HomeView: View {
                 }
             }
             
-            SendView().navigationLinkValues(SendNavigationLinkValues.self)
+            NavigationStack(path: $sendNavigator.path) {
+                SendView()
+                    .navigationDestination(for: SendNavigationLinkValues.self, destination: { $0 })
+            }
+            .environmentObject(sendNavigator)
             .tabItem {
                 Label {
                     Text("Send")
@@ -147,6 +149,15 @@ struct HomeView: View {
             
             showSavedAlert = true
         }
+    }
+}
+
+
+class Navigator: ObservableObject {
+    @Published var path = NavigationPath()
+
+    func navigate(with model: any Hashable) {
+        path.append(model)
     }
 }
 
