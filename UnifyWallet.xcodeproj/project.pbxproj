@@ -55,6 +55,7 @@
 		0A832A3D2C29F45800F25C46 /* LibWally.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8329E52C29F1E800F25C46 /* LibWally.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0A832A402C2A3F5D00F25C46 /* SendNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */; };
 		0A832A442C2A66C700F25C46 /* SelectInputsSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A432C2A66C700F25C46 /* SelectInputsSendView.swift */; };
+		0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -119,6 +120,7 @@
 		0A832A152C29F21400F25C46 /* HistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendNavigationLinkValues.swift; sourceTree = "<group>"; };
 		0A832A432C2A66C700F25C46 /* SelectInputsSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectInputsSendView.swift; sourceTree = "<group>"; };
+		0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNavigationLinkValues.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,6 +281,7 @@
 				0A832A452C2B567D00F25C46 /* Send */,
 				0A832A142C29F21400F25C46 /* ReceiveView.swift */,
 				0A832A152C29F21400F25C46 /* HistoryView.swift */,
+				0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */,
 			);
 			path = "Parent Views";
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				0A832A1F2C29F21400F25C46 /* Transaction.swift in Sources */,
 				0A832A322C29F21400F25C46 /* BroadcastView.swift in Sources */,
 				0A832A202C29F21400F25C46 /* Errors.swift in Sources */,
+				0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */,
 				0A832A302C29F21400F25C46 /* BitcoinCoreRPC.swift in Sources */,
 				0A832A3B2C29F21400F25C46 /* HistoryView.swift in Sources */,
 				0A8329D12C29F00F00F25C46 /* UnifyWallet.xcdatamodeld in Sources */,

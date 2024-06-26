@@ -48,30 +48,22 @@ struct ReceiveView: View {
             }
             
             if let amountDouble = Double(amount), amountDouble > 0 && address != "" {
-                NavigationLink {
-                    ReceiveAddInputView(invoiceAmount: amountDouble, invoiceAddress: address)
-                } label: {
-                    Text("Add Inputs Manually")
+                
+                NavigationLink(value: ReceiveNavigationLinkValues.receiveAddOutputView(invoiceAmount: amountDouble, 
+                                                                                       invoiceAddress: address,
+                                                                                       utxos: utxos)) {
+                    
+                    Text("Add an output")
                         .foregroundStyle(.blue)
                 }
                 
-                Text("Select inputs manually to add to the Payjoin transaction.")
-                    .foregroundStyle(.secondary)
-                
-                NavigationLink {
-                    ReceiveAddOutputView(invoiceAmount: amountDouble, invoiceAddress: address, additionalInputs: [], utxos: utxos)
-                } label: {
-                    Text("Add Inputs Automatically")
-                        .foregroundStyle(.blue)
-                }
-                
-                Text("Bitcoin Core will use its coin selection algorithm to select inputs to pay the additonal output you specify.")
-                    .foregroundStyle(.secondary)
-                
-                NavigationLink {
-                    InvoiceView(invoiceAmount: amountDouble, invoiceAddress: address, additionalInputs: [], utxos: utxos, outputAddress: nil, outputAmount: nil)
-                } label: {
-                    Text("Skip")
+                NavigationLink(value: ReceiveNavigationLinkValues.invoiceView(invoiceAmount: amountDouble, 
+                                                                              invoiceAddress: address,
+                                                                              additionalInputs: [],
+                                                                              utxos: utxos,
+                                                                              outputAddress: nil,
+                                                                              outputAmount: nil)) {
+                    Text("Skip adding an output")
                         .foregroundStyle(.blue)
                 }
                 

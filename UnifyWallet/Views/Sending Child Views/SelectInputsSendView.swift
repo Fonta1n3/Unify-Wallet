@@ -49,7 +49,9 @@ struct SelectInputsSendView: View {
                     
                 } footer: {
                     if totalAmtSelected > invoice.amount! {
-                        NavigationLink(value: SendNavigationLinkValues.sendUtxoView(utxos: utxos, invoice: invoice, utxosToConsume: selectedUtxosToConsume)) {
+                        NavigationLink(value: SendNavigationLinkValues.sendUtxoView(utxos: utxos,
+                                                                                    invoice: invoice,
+                                                                                    utxosToConsume: selectedUtxosToConsume)) {
                             Text("Pay now")
                         }
                     } else {
@@ -58,6 +60,7 @@ struct SelectInputsSendView: View {
                 }
                 .onChange(of: selection) {
                     totalAmtSelected = 0.0
+                    selectedUtxosToConsume.removeAll()
                     
                     for utxo in selection {
                         totalAmtSelected += utxo.amount!
@@ -81,7 +84,6 @@ struct SelectInputsSendView: View {
                 .foregroundStyle(.secondary)
             #endif
         }
-        
     }
     
     private func showError(desc: String) {

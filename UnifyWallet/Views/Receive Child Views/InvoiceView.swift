@@ -11,6 +11,7 @@ import NostrSDK
 import LibWally
 
 struct InvoiceView: View, DirectMessageEncrypting {
+    @EnvironmentObject private var receiveNavigator: Navigator
     private let urlString = UserDefaults.standard.string(forKey: "nostrRelay") ?? "wss://relay.damus.io"
     @State private var invoice: Invoice?
     @State private var ourKeypair: Keypair?
@@ -32,7 +33,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
     let additionalInputs: [Utxo]?
     let utxos: [Utxo]?
     let outputAddress: String?
-    let outputAmount: String?
+    let outputAmount: Double?
     
     
     var body: some View {
@@ -142,9 +143,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                     HStack() {
                         ProgressView()
                         
-                        Spacer()
-                        
-                        Text("Waiting on response from sender...")
+                        Text(" Waiting on response from sender...")
                             .foregroundStyle(.secondary)
                     }
                     .alert(errorToDisplay, isPresented: $showError) {
@@ -156,10 +155,17 @@ struct InvoiceView: View, DirectMessageEncrypting {
             if paymentBroadcastBySender {
                 HStack() {
                     Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.green)
                                         
                     Text("Payment received ✓")
+                    
+                    Button {
+                        receiveNavigator.path.removeLast(receiveNavigator.path.count)
+                    } label: {
+                        Text("Done")
+                    }
                 }
-                .foregroundStyle(.green)
+                
             }
             
         }
@@ -259,6 +265,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
             self.payeePubkey = payeePubkey
             
             peerNpub = payeePubkey.npub
+            
+            print("ourKeypair!.privateKey: \(ourKeypair!.privateKey)")
+            print("payeePubkey: \(payeePubkey)")
             
             guard let decryptedMessage = try? decrypt(encryptedContent: content,
                                                       privateKey: ourKeypair!.privateKey,
@@ -386,7 +395,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
         }
         
         // add the output
-        let ourOutput = [outputAddress!: outputAmount!]
+        let ourOutput = [outputAddress!: "\(outputAmount!)"]
         var outputsForParams: [[String: Any]] = []
         outputsForParams.append(ourOutput)
 
@@ -584,52 +593,3 @@ struct QRView: View {
     }
     #endif
 }
-
-
-//struct CreateProposalView: View, DirectMessageEncrypting {
-//    @State private var showErr = false
-//    @State private var errDesc = ""
-//    //@Binding var showSpinner = false
-//    
-//    let additionalInputs: [Utxo]?
-//    let originalPsbt: PSBT
-//    let ourKeypair: Keypair
-//    let payeeNpub: String
-//    let additionalOutputAddress: String
-//    let additionalOutputAmount: String
-//    
-//
-//    var body: some View {
-//        
-//        
-//    }
-//    
-//    
-//    
-//    
-//    
-//    private func showError(desc: String) {
-//        errDesc = desc
-//        showSpinner = false
-//        showErr = true
-//    }
-//
-//    
-//    private func encryptedMessage(ourKeypair: Keypair, receiversNpub: String, message: String) -> String? {
-//        guard let receiversPubKey = PublicKey(npub: receiversNpub) else {
-//            showError(desc: "Unable to convert hex pubkey to PublicKey.")
-//            
-//            return nil
-//        }
-//
-//        guard let encryptedMessage = try? encrypt(content: message,
-//                                                  privateKey: ourKeypair.privateKey,
-//                                                  publicKey: receiversPubKey) else {
-//            showError(desc: "Unable to encrypt message.")
-//            
-//            return nil
-//        }
-//
-//        return encryptedMessage
-//    }
-//}

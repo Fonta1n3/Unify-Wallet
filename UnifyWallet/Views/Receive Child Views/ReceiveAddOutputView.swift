@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import LibWally
 
 
 struct ReceiveAddOutputView: View {
@@ -19,16 +18,7 @@ struct ReceiveAddOutputView: View {
     
     let invoiceAmount: Double
     let invoiceAddress: String
-    let additionalInputs: [Utxo]
     let utxos: [Utxo]
-    
-    
-    init(invoiceAmount: Double, invoiceAddress: String, additionalInputs: [Utxo], utxos: [Utxo]) {
-        self.invoiceAmount = invoiceAmount
-        self.invoiceAddress = invoiceAddress
-        self.additionalInputs = additionalInputs
-        self.utxos = utxos
-    }
     
     
     var body: some View {
@@ -43,7 +33,7 @@ struct ReceiveAddOutputView: View {
                 }
             }
             
-            Section("Additional Output") {
+            Section() {
                 HStack() {
                     Label("BTC Amount", systemImage: "bitcoinsign.circle")
                         .frame(maxWidth: 200, alignment: .leading)
@@ -51,9 +41,9 @@ struct ReceiveAddOutputView: View {
                     Spacer()
                     
                     TextField("", text: $additionalOutputAmount)
-                        #if os(iOS)
+#if os(iOS)
                         .keyboardType(.decimalPad)
-                        #endif
+#endif
                 }
                 
                 HStack() {
@@ -63,25 +53,41 @@ struct ReceiveAddOutputView: View {
                     Spacer()
                     
                     TextField("", text: $additionalOutputAddress)
-                        #if os(iOS)
+#if os(iOS)
                         .keyboardType(.default)
-                        #endif
+#endif
                 }
+            } header: {
+                Text("Additional Output")
+                
+            } footer: {
+                Text("Adding an output to the transaction is what makes this a Pajoin transaction. This should be a payment to another entity or a consolidation. This output will not be shown in the invoice.")
+                    .foregroundStyle(.secondary)
             }
             
-            Text("Adding an output to the transaction is what makes this a Pajoin transaction. This should be a payment to another entity or a consolidation. This output will not be shown in the invoice.")
-                .foregroundStyle(.secondary)
             
-            if additionalOutputAmount != "", additionalOutputAddress != "" {
-                NavigationLink {
-                    InvoiceView(invoiceAmount: invoiceAmount,
-                                invoiceAddress: invoiceAddress,
-                                additionalInputs: additionalInputs, 
-                                utxos: utxos,
-                                outputAddress: additionalOutputAddress,
-                                outputAmount: additionalOutputAmount)
-                } label: {
-                    Text("View Invoice")
+            
+            if additionalOutputAmount != "", additionalOutputAddress != "", let dblAmount = Double(additionalOutputAmount), dblAmount > 0 {
+                NavigationLink(value: ReceiveNavigationLinkValues.receiveAddInputView(invoiceAmount: invoiceAmount, 
+                                                                                      invoiceAddress: invoiceAddress,
+                                                                                      outputAddress: additionalOutputAddress,
+                                                                                      outputAmount: dblAmount,
+                                                                                      utxos: utxos)) {
+                    
+                    Text("Select utxo's manually")
+                        .foregroundStyle(.blue)
+                    
+                    
+                }
+                
+                NavigationLink(value: ReceiveNavigationLinkValues.invoiceView(invoiceAmount: invoiceAmount, 
+                                                                              invoiceAddress: invoiceAddress,
+                                                                              additionalInputs: [],
+                                                                              utxos: utxos,
+                                                                              outputAddress: additionalOutputAddress,
+                                                                              outputAmount: dblAmount)) {
+                    
+                    Text("Select utxo's automatically")
                         .foregroundStyle(.blue)
                 }
             }
@@ -102,14 +108,8 @@ struct ReceiveAddOutputView: View {
     
     
     private func getSpendableAmount() {
-        if additionalInputs.count > 0 {
-            for input in additionalInputs {
-                spendableAmount += input.amount!
-            }
-        } else {
-            for input in utxos {
-                spendableAmount += input.amount!
-            }
+        for input in utxos {
+            spendableAmount += input.amount!
         }
     }
     

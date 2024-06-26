@@ -12,12 +12,15 @@ struct HomeView: View {
     @State private var showNotSavedAlert = false
     @State private var showSavedAlert = false
     @StateObject private var sendNavigator = Navigator()
+    @StateObject private var receiveNavigator = Navigator()
     
     var body: some View {
         TabView() {
-            NavigationStack() {
+            NavigationStack(path: $receiveNavigator.path) {
                 ReceiveView()
+                    .navigationDestination(for: ReceiveNavigationLinkValues.self, destination: { $0 })
             }
+            .environmentObject(receiveNavigator)
             .tabItem {
                 Label {
                     Text("Receive")
@@ -41,7 +44,7 @@ struct HomeView: View {
                 }
             }
             
-            NavigationStack {
+            NavigationStack() {
                 HistoryView()
             }
             .tabItem {

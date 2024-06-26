@@ -21,7 +21,6 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     @State private var proposalPsbtReceived = false
     @State private var ourKeypair: Keypair?
     @State private var recipientsPubkey: PublicKey?
-    @State private var paymentBroadcastByRecipient = false
     @State private var selection = Set<Utxo>()
     @State private var selectedUtxosToConsume: [Utxo] = []
     @State private var waitingForResponse = false
@@ -35,7 +34,15 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     
     
     var body: some View {
-        if !waitingForResponse {
+        if waitingForResponse {
+            Spinner()
+                .alert(errorToDisplay, isPresented: $showError) {
+                    Button("OK", role: .cancel) {
+                        sendNavigator.path.removeLast(sendNavigator.path.count)
+                    }
+                }
+                .frame(alignment: .center)
+        } else {
             if let signedRawTx = signedRawTx,
                let signedPsbt = signedPsbt,
                let ourKeypair = ourKeypair,
@@ -51,14 +58,30 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                                                                         psbtProposalString: signedPsbt.description)
                         )
                     }
+                    .alert(errorToDisplay, isPresented: $showError) {
+                        Button("OK", role: .cancel) {
+                            sendNavigator.path.removeLast(sendNavigator.path.count)
+                        }
+                    }
             } else {
-                Button("", action: {})
-                .onAppear {
-                    payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
+                Form() {
+                    Text("Confirm Payment?")
+                    Text(invoice.amount!.btcBalanceWithSpaces)
+                    Text(invoice.address!)
+                    Text("The recpipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
+                        .foregroundStyle(.secondary)
+                    
+                    Button("Confirm", action: {
+                        payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
+                    })
+                    .alert(errorToDisplay, isPresented: $showError) {
+                        Button("OK", role: .cancel) {
+                            sendNavigator.path.removeLast(sendNavigator.path.count)
+                        }
+                    }
                 }
+                .frame(alignment: .topLeading)
             }
-        } else {
-            Spinner()
         }
     }
     
@@ -229,7 +252,8 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                             }
                                                         
                             if decryptedMessage == "Payment broadcast by recipient ✓" {
-                                paymentBroadcastByRecipient = true
+                                //paymentBroadcastByRecipient = true
+                                showError(desc: "Payment broadcast by recipient ✓")
                                 
                                 return
                             }

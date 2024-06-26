@@ -132,8 +132,13 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                         Text((Double(psbtProposal.fee!) / 100000000.0).btcBalanceWithSpaces)
                     }
                     
-                    NavigationLink(value: SendNavigationLinkValues.broadcastView(hexstring: signedRawTx, invoice: invoice, ourNostrPrivateKey: ourNostrPrivKey, recipientsPubkey: recipientsPubkey)) {
+                    NavigationLink(value: SendNavigationLinkValues.broadcastView(hexstring: signedRawTx, 
+                                                                                 invoice: invoice,
+                                                                                 ourNostrPrivateKey: ourNostrPrivKey,
+                                                                                 recipientsPubkey: recipientsPubkey)) {
+                        
                         Text("Broadcast payment")
+                            .foregroundStyle(.blue)
                     }
                 }
                 .buttonStyle(.bordered)
