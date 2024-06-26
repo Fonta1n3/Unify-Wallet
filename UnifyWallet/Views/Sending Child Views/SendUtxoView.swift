@@ -34,53 +34,55 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     
     
     var body: some View {
-        if waitingForResponse {
-            Spinner()
-                .alert(errorToDisplay, isPresented: $showError) {
-                    Button("OK", role: .cancel) {
-                        sendNavigator.path.removeLast(sendNavigator.path.count)
-                    }
-                }
-                .frame(alignment: .center)
-        } else {
-            if let signedRawTx = signedRawTx,
-               let signedPsbt = signedPsbt,
-               let ourKeypair = ourKeypair,
-               let recipientsPubkey = recipientsPubkey {
-                
-                Button("", action: {})
-                    .onAppear {
-                        sendNavigator.path.append(
-                            SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
-                                                                        invoice: invoice,
-                                                                        ourNostrPrivKey: ourKeypair.privateKey.hex,
-                                                                        recipientsPubkey: recipientsPubkey.hex,
-                                                                        psbtProposalString: signedPsbt.description)
-                        )
-                    }
+        Form() {
+            if waitingForResponse {
+                Spinner()
                     .alert(errorToDisplay, isPresented: $showError) {
                         Button("OK", role: .cancel) {
                             sendNavigator.path.removeLast(sendNavigator.path.count)
                         }
                     }
+                    .frame(alignment: .center)
             } else {
-                Form() {
-                    Text("Confirm Payment?")
-                    Text(invoice.amount!.btcBalanceWithSpaces)
-                    Text(invoice.address!)
-                    Text("The recpipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
-                        .foregroundStyle(.secondary)
+                if let signedRawTx = signedRawTx,
+                   let signedPsbt = signedPsbt,
+                   let ourKeypair = ourKeypair,
+                   let recipientsPubkey = recipientsPubkey {
                     
-                    Button("Confirm", action: {
-                        payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
-                    })
-                    .alert(errorToDisplay, isPresented: $showError) {
-                        Button("OK", role: .cancel) {
-                            sendNavigator.path.removeLast(sendNavigator.path.count)
+                    Button("", action: {})
+                        .onAppear {
+                            sendNavigator.path.append(
+                                SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
+                                                                            invoice: invoice,
+                                                                            ourNostrPrivKey: ourKeypair.privateKey.hex,
+                                                                            recipientsPubkey: recipientsPubkey.hex,
+                                                                            psbtProposalString: signedPsbt.description)
+                            )
+                        }
+                        .alert(errorToDisplay, isPresented: $showError) {
+                            Button("OK", role: .cancel) {
+                                sendNavigator.path.removeLast(sendNavigator.path.count)
+                            }
+                        }
+                } else {
+                    VStack() {
+                        Text("Confirm Payment?")
+                        Text(invoice.amount!.btcBalanceWithSpaces)
+                        Text(invoice.address!)
+                        Text("The recpipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
+                            .foregroundStyle(.secondary)
+                        
+                        Button("Confirm", action: {
+                            payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
+                        })
+                        .alert(errorToDisplay, isPresented: $showError) {
+                            Button("OK", role: .cancel) {
+                                sendNavigator.path.removeLast(sendNavigator.path.count)
+                            }
                         }
                     }
+                    .frame(alignment: .topLeading)
                 }
-                .frame(alignment: .topLeading)
             }
         }
     }

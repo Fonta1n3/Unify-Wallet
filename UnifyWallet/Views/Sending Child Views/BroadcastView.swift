@@ -54,6 +54,15 @@ struct BroadcastView: View, DirectMessageEncrypting {
                             Text(invoice.address!)
                         }
                         
+                        HStack() {
+                            Spacer()
+                            
+                            Text("Tap confirm to broadcast the transaction, this is final.")
+                                .foregroundStyle(.secondary)
+                            
+                            Spacer()
+                        }
+                        
                         if let _ = ourKeypair, let _ = recipientsPublicKey {
                             HStack() {
                                 Spacer()
@@ -67,17 +76,6 @@ struct BroadcastView: View, DirectMessageEncrypting {
                                 
                                 Spacer()
                             }
-                        }
-                        
-                        
-                        
-                        HStack() {
-                            Spacer()
-                            
-                            Text("Tap confirm to broadcast the transaction, this is final.")
-                                .foregroundStyle(.secondary)
-                            
-                            Spacer()
                         }
                     }
                 }

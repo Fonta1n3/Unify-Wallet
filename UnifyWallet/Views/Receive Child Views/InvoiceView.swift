@@ -146,9 +146,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         Text(" Waiting on response from sender...")
                             .foregroundStyle(.secondary)
                     }
-                    .alert(errorToDisplay, isPresented: $showError) {
-                        Button("OK", role: .cancel) {}
-                    }
+//                    .alert(errorToDisplay, isPresented: $showError) {
+//                        Button("OK", role: .cancel) {}
+//                    }
                 }
             }
             
@@ -165,9 +165,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         Text("Done")
                     }
                 }
-                
             }
-            
         }
         .onAppear(perform: {
             hex = nil
@@ -186,7 +184,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
             Button("OK", role: .cancel) {}
         }
         .alert("Payment was broadcast by sender ✓", isPresented: $paymentBroadcastBySender) {
-            Button("OK", role: .cancel) {}
+            Button("OK", role: .cancel) {
+                receiveNavigator.path.removeLast(receiveNavigator.path.count)
+            }
         }
         .buttonStyle(.bordered)
         .formStyle(.grouped)
@@ -224,6 +224,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
     
     private func showError(desc: String) {
         errorToDisplay = desc
+        showSpinner = false
         showError = true
     }
     
@@ -266,9 +267,6 @@ struct InvoiceView: View, DirectMessageEncrypting {
             
             peerNpub = payeePubkey.npub
             
-            print("ourKeypair!.privateKey: \(ourKeypair!.privateKey)")
-            print("payeePubkey: \(payeePubkey)")
-            
             guard let decryptedMessage = try? decrypt(encryptedContent: content,
                                                       privateKey: ourKeypair!.privateKey,
                                                       publicKey: payeePubkey) else {
@@ -279,7 +277,6 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         
             if decryptedMessage == "Payment broadcast by sender ✓" {
                 paymentBroadcastBySender = true
-                showSpinner = false
                 showError(desc: decryptedMessage)
                 
                 return

@@ -279,9 +279,8 @@
 				0A832A112C29F21400F25C46 /* ConfigView.swift */,
 				0A832A122C29F21400F25C46 /* HomeView.swift */,
 				0A832A452C2B567D00F25C46 /* Send */,
-				0A832A142C29F21400F25C46 /* ReceiveView.swift */,
+				0A832A482C2BC1DA00F25C46 /* Receive */,
 				0A832A152C29F21400F25C46 /* HistoryView.swift */,
-				0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */,
 			);
 			path = "Parent Views";
 			sourceTree = "<group>";
@@ -293,6 +292,15 @@
 				0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */,
 			);
 			path = Send;
+			sourceTree = "<group>";
+		};
+		0A832A482C2BC1DA00F25C46 /* Receive */ = {
+			isa = PBXGroup;
+			children = (
+				0A832A142C29F21400F25C46 /* ReceiveView.swift */,
+				0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */,
+			);
+			path = Receive;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
