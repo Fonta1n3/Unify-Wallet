@@ -88,7 +88,7 @@ struct BroadcastView: View, DirectMessageEncrypting {
                     guard let nostrPrivKey = PrivateKey(hex: ourNostrPrivateKey) else { return }
                     
                     ourKeypair = Keypair(privateKey: nostrPrivKey)
-                    recipientsPublicKey = ourKeypair!.publicKey
+                    recipientsPublicKey = PublicKey(hex: recipientsPubkey)!
                 }
             }
         } else if let txid = txid {
