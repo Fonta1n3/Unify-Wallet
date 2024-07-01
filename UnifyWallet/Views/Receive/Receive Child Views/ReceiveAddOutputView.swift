@@ -55,7 +55,9 @@ struct ReceiveAddOutputView: View {
                     TextField("", text: $additionalOutputAddress)
 #if os(iOS)
                         .keyboardType(.default)
+                        
 #endif
+                        .autocorrectionDisabled()
                 }
             } header: {
                 Text("Additional Output")

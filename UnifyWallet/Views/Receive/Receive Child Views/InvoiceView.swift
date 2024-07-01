@@ -136,9 +136,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         showSpinner = true
                         createProposal()
                     }
-                    .alert(errorToDisplay, isPresented: $showError) {
-                        Button("OK", role: .cancel) {}
-                    }
+
                 } else {
                     HStack() {
                         ProgressView()
@@ -146,9 +144,6 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         Text(" Waiting on response from sender...")
                             .foregroundStyle(.secondary)
                     }
-//                    .alert(errorToDisplay, isPresented: $showError) {
-//                        Button("OK", role: .cancel) {}
-//                    }
                 }
             }
             
@@ -277,7 +272,6 @@ struct InvoiceView: View, DirectMessageEncrypting {
                         
             if decryptedMessage == "Payment broadcast by sender ✓" {
                 paymentBroadcastBySender = true
-                showError(desc: decryptedMessage)
                 
                 return
             }

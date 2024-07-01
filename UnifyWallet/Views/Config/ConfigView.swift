@@ -31,8 +31,8 @@ struct ConfigView: View {
     
     
     var body: some View {
-        Spacer()
-        Label("Configuration", systemImage: "gear")
+        //Spacer()
+        //Label("Configuration", systemImage: "gear")
         
         Form() {
             Section("Bitcoin Core") {

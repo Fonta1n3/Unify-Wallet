@@ -56,6 +56,8 @@
 		0A832A402C2A3F5D00F25C46 /* SendNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */; };
 		0A832A442C2A66C700F25C46 /* SelectInputsSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A432C2A66C700F25C46 /* SelectInputsSendView.swift */; };
 		0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */; };
+		0A832A4A2C3330A900F25C46 /* ConfigNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */; };
+		0A832A4D2C33319700F25C46 /* HistoryNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -121,6 +123,8 @@
 		0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendNavigationLinkValues.swift; sourceTree = "<group>"; };
 		0A832A432C2A66C700F25C46 /* SelectInputsSendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectInputsSendView.swift; sourceTree = "<group>"; };
 		0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNavigationLinkValues.swift; sourceTree = "<group>"; };
+		0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigNavigationLinkValues.swift; sourceTree = "<group>"; };
+		0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryNavigationLinkValues.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,9 +249,11 @@
 		0A832A072C29F21400F25C46 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0A832A082C29F21400F25C46 /* Sending Child Views */,
-				0A832A0C2C29F21400F25C46 /* Receive Child Views */,
-				0A832A102C29F21400F25C46 /* Parent Views */,
+				0A832A122C29F21400F25C46 /* HomeView.swift */,
+				0A832A4B2C33316300F25C46 /* Config */,
+				0A832A452C2B567D00F25C46 /* Send */,
+				0A832A482C2BC1DA00F25C46 /* Receive */,
+				0A832A4E2C33325600F25C46 /* History */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -273,21 +279,10 @@
 			path = "Receive Child Views";
 			sourceTree = "<group>";
 		};
-		0A832A102C29F21400F25C46 /* Parent Views */ = {
-			isa = PBXGroup;
-			children = (
-				0A832A112C29F21400F25C46 /* ConfigView.swift */,
-				0A832A122C29F21400F25C46 /* HomeView.swift */,
-				0A832A452C2B567D00F25C46 /* Send */,
-				0A832A482C2BC1DA00F25C46 /* Receive */,
-				0A832A152C29F21400F25C46 /* HistoryView.swift */,
-			);
-			path = "Parent Views";
-			sourceTree = "<group>";
-		};
 		0A832A452C2B567D00F25C46 /* Send */ = {
 			isa = PBXGroup;
 			children = (
+				0A832A082C29F21400F25C46 /* Sending Child Views */,
 				0A832A132C29F21400F25C46 /* SendView.swift */,
 				0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */,
 			);
@@ -297,10 +292,29 @@
 		0A832A482C2BC1DA00F25C46 /* Receive */ = {
 			isa = PBXGroup;
 			children = (
+				0A832A0C2C29F21400F25C46 /* Receive Child Views */,
 				0A832A142C29F21400F25C46 /* ReceiveView.swift */,
 				0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */,
 			);
 			path = Receive;
+			sourceTree = "<group>";
+		};
+		0A832A4B2C33316300F25C46 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				0A832A112C29F21400F25C46 /* ConfigView.swift */,
+				0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		0A832A4E2C33325600F25C46 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				0A832A152C29F21400F25C46 /* HistoryView.swift */,
+				0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */,
+			);
+			path = History;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -389,6 +403,7 @@
 				0A832A322C29F21400F25C46 /* BroadcastView.swift in Sources */,
 				0A832A202C29F21400F25C46 /* Errors.swift in Sources */,
 				0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */,
+				0A832A4D2C33319700F25C46 /* HistoryNavigationLinkValues.swift in Sources */,
 				0A832A302C29F21400F25C46 /* BitcoinCoreRPC.swift in Sources */,
 				0A832A3B2C29F21400F25C46 /* HistoryView.swift in Sources */,
 				0A8329D12C29F00F00F25C46 /* UnifyWallet.xcdatamodeld in Sources */,
@@ -396,6 +411,7 @@
 				0A832A182C29F21400F25C46 /* RPCPort.swift in Sources */,
 				0A832A242C29F21400F25C46 /* CodeScanner.swift in Sources */,
 				0A832A1E2C29F21400F25C46 /* DecodedRawTx.swift in Sources */,
+				0A832A4A2C3330A900F25C46 /* ConfigNavigationLinkValues.swift in Sources */,
 				0A832A262C29F21400F25C46 /* ScannerViewController.swift in Sources */,
 				0A832A272C29F21400F25C46 /* Crypto.swift in Sources */,
 				0A832A3A2C29F21400F25C46 /* ReceiveView.swift in Sources */,

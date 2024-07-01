@@ -18,14 +18,12 @@ struct SendView: View, DirectMessageEncrypting {
     @State private var utxos: [Utxo] = []
     @State private var showError = false
     @State private var errorDesc = ""
-    @State private var showAutomaticDetailView = false
-    @State private var showManualDetailView = false
     
         
     var body: some View {
-        Spacer()
+        //Spacer()
         
-        Label("Send", systemImage: "arrow.up.forward.circle")
+        //Label("Send", systemImage: "arrow.up.forward.circle")
         
         Form() {
             if !invoiceUploaded {

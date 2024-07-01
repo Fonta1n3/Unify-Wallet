@@ -30,6 +30,10 @@ struct SignedProposalView: View, DirectMessageEncrypting {
     
     var body: some View {
         if let psbtProposal = psbtProposal {
+            Text("Payjoin Proposal")
+                .font(.title)
+                .fontWeight(.bold)
+            
             Form() {
                 Section("Signed Tx") {
                     Label("Raw transaction", systemImage: "doc.plaintext")
@@ -42,12 +46,12 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                             .foregroundStyle(.secondary)
                         
                         Button {
-#if os(macOS)
+                            #if os(macOS)
                             NSPasteboard.general.clearContents()
                             NSPasteboard.general.setString(signedRawTx, forType: .string)
-#elseif os(iOS)
+                            #elseif os(iOS)
                             UIPasteboard.general.string = signedRawTx
-#endif
+                            #endif
                             copied = true
                             
                         } label: {
@@ -65,12 +69,12 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                             .foregroundStyle(.secondary)
                         
                         Button {
-#if os(macOS)
+                            #if os(macOS)
                             NSPasteboard.general.clearContents()
                             NSPasteboard.general.setString(psbtProposalString, forType: .string)
-#elseif os(iOS)
+                            #elseif os(iOS)
                             UIPasteboard.general.string = psbtProposalString.description
-#endif
+                            #endif
                             copied = true
                             
                         } label: {
@@ -81,7 +85,13 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                         let inputAmount = (Double(input.amount!) / 100000000.0).btcBalanceWithSpaces
                         
                         HStack() {
-                            Label("Input", systemImage: "arrow.down.right.circle")
+                            Label {
+                                Text("Input")
+                            } icon: {
+                                Image(systemName: "arrow.down.right.circle")
+                                    .foregroundStyle(.blue)
+                            }
+                            
                             Spacer()
                             Text(inputAmount)
                         }
@@ -95,7 +105,16 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                             let bold = outputAddress == invoice.address && btcAmount == invoice.amount!
                             
                             HStack() {
-                                Label("Output", systemImage: "arrow.up.right.circle")
+                                Label {
+                                    if bold {
+                                        Text("Invoice output")
+                                    } else {
+                                        Text("Output")
+                                    }
+                                } icon: {
+                                    Image(systemName: "arrow.up.right.circle")
+                                        .foregroundStyle(.green)
+                                }
                                 
                                 Spacer()
                                 

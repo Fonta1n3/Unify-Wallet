@@ -34,7 +34,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     
     
     var body: some View {
-        Form() {
+        //Form() {
             if waitingForResponse {
                 Spinner()
                     .alert(errorToDisplay, isPresented: $showError) {
@@ -65,26 +65,35 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                             }
                         }
                 } else {
-                    VStack() {
-                        Text("Confirm Payment?")
-                        Text(invoice.amount!.btcBalanceWithSpaces)
-                        Text(invoice.address!)
-                        Text("The recpipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
-                            .foregroundStyle(.secondary)
+                    VStack(spacing: 20) {
+                        Text("Send payment?")
+                            .font(.title)
+                            .fontWeight(.bold)
                         
-                        Button("Confirm", action: {
+                        Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!)?")
+                            .font(.body)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                        
+                        Text("The recipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                            .font(.subheadline)
+                        
+                        Button("Send now", action: {
                             payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
                         })
-                        .alert(errorToDisplay, isPresented: $showError) {
-                            Button("OK", role: .cancel) {
-                                sendNavigator.path.removeLast(sendNavigator.path.count)
-                            }
+                        .padding(.top)
+                    }
+                    .alert(errorToDisplay, isPresented: $showError) {
+                        Button("OK", role: .cancel) {
+                            sendNavigator.path.removeLast(sendNavigator.path.count)
                         }
                     }
-                    .frame(alignment: .topLeading)
+                    .padding()
                 }
             }
-        }
+        //}
     }
     
     

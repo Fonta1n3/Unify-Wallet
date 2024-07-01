@@ -15,19 +15,6 @@ struct HistoryView: View {
     @State private var errorToShow = ""
         
     var body: some View {
-        HStack() {
-            Spacer()
-            
-            Button() {
-                listTransactions()
-            } label: {
-                Image(systemName: "arrow.clockwise")
-                    .foregroundStyle(.blue)
-            }
-        }
-        .background(.clear)
-        
-        
         Form() {
             List() {
                 ForEach(transactions, id: \.self) { transaction in
@@ -58,6 +45,20 @@ struct HistoryView: View {
                             
                             Text(transaction.category.localizedCapitalized)
                                 .foregroundStyle(.primary)
+                        }
+                        
+                        HStack() {
+                            Label {
+                                Text("Confirmations")
+                                    .foregroundStyle(.secondary)
+                            } icon: {
+                                Image(systemName: "square.stack")
+                                    .foregroundColor(.blue)
+                            }
+                            
+                            Spacer()
+                            
+                            Text("\(transaction.confirmations)")
                         }
                         
                         HStack() {
@@ -94,20 +95,6 @@ struct HistoryView: View {
                                 
                                 Text(fee.btcBalanceWithSpaces)
                             }
-                        }
-                                                
-                        HStack() {
-                            Label {
-                                Text("Confirmations")
-                                    .foregroundStyle(.secondary)
-                            } icon: {
-                                Image(systemName: "square.stack")
-                                    .foregroundColor(.blue)
-                            }
-                            
-                            Spacer()
-                            
-                            Text("\(transaction.confirmations)")
                         }
                         
                         HStack() {
@@ -163,6 +150,16 @@ struct HistoryView: View {
         }
         .alert(errorToShow, isPresented: $showError) {
             Button("OK", role: .cancel) {}
+        }
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button() {
+                    listTransactions()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundStyle(.blue)
+                }
+            }
         }
     }
 

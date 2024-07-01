@@ -18,7 +18,7 @@ struct ReceiveView: View {
     
     
     var body: some View {
-        Label("Receive", systemImage: "arrow.down.forward.circle")
+        //Label("Receive", systemImage: "arrow.down.forward.circle")
         
         Form() {
             Section("Create Invoice") {
@@ -44,6 +44,7 @@ struct ReceiveView: View {
                         #if os(iOS)
                         .keyboardType(.default)
                         #endif
+                        .autocorrectionDisabled()
                 }
             }
             
