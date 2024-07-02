@@ -21,10 +21,6 @@ struct SendView: View, DirectMessageEncrypting {
     
         
     var body: some View {
-        //Spacer()
-        
-        //Label("Send", systemImage: "arrow.up.forward.circle")
-        
         Form() {
             if !invoiceUploaded {
                 Section("Invoice") {

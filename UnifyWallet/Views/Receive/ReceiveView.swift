@@ -18,8 +18,6 @@ struct ReceiveView: View {
     
     
     var body: some View {
-        //Label("Receive", systemImage: "arrow.down.forward.circle")
-        
         Form() {
             Section("Create Invoice") {
                 HStack() {
@@ -79,9 +77,21 @@ struct ReceiveView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
         .onAppear {
+//            DataManager.deleteAllData(entityName: "Credentials") { deleted in
+//                print("deleted: \(deleted)")
+//            }
             amount = ""
-            fetchAddress()
-            getUtxos()
+            address = ""
+            DataManager.retrieve(entityName: "Credentials") { creds in
+                guard let creds = creds else {
+                    errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
+                    showError = true
+                    return
+                }
+                
+                fetchAddress()
+                getUtxos()
+            }
         }
         .alert(errDesc, isPresented: $showError) {
             Button("OK", role: .cancel) {}

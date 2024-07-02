@@ -12,6 +12,7 @@ struct HomeView: View {
     @StateObject private var sendNavigator = Navigator()
     @StateObject private var receiveNavigator = Navigator()
     
+    
     var body: some View {
         TabView() {
             NavigationStack(path: $receiveNavigator.path) {
@@ -73,6 +74,7 @@ struct HomeView: View {
             }
         }
         .preferredColorScheme(.dark)
+        
     }
 }
 

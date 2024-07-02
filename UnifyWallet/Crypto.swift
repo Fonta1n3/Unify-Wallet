@@ -12,9 +12,13 @@ import LibWally
 
 class Crypto {
     
+    static let encKeyUnify = UserDefaults.standard.value(forKey: "encKeyUnify") as? String
+    
     static func encrypt(_ data: Data) -> Data? {
-        guard let key = KeyChain.getData("encKeyUnify") else {
-            if KeyChain.set(Crypto.privKeyData(), forKey: "encKeyUnify") {
+        guard let encKeyUnify = encKeyUnify else { return nil }
+        
+        guard let key = KeyChain.getData(encKeyUnify) else {
+            if KeyChain.set(Crypto.privKeyData(), forKey: encKeyUnify) {
                 return encrypt(data)
             } else {
                 return nil
@@ -26,7 +30,9 @@ class Crypto {
     
     
     static func decrypt(_ data: Data) -> Data? {
-        guard let key = KeyChain.getData("encKeyUnify"),
+        guard let encKeyUnify = encKeyUnify else { return nil }
+        
+        guard let key = KeyChain.getData(encKeyUnify),
             let box = try? ChaChaPoly.SealedBox.init(combined: data) else {
                 return nil
         }
@@ -39,6 +45,13 @@ class Crypto {
         let digest = SHA256.hash(data: data)
         
         return Data(digest)
+    }
+    
+    
+    static func sha256hash(_ text: String) -> String {
+        let digest = SHA256.hash(data: Data(text.utf8))
+        
+        return digest.map { String(format: "%02hhx", $0) }.joined()
     }
     
     

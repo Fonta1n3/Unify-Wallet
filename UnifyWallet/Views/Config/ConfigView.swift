@@ -26,14 +26,14 @@ struct ConfigView: View {
     @State private var bitcoinCoreConnected = false
     @State private var tint: Color = .red
     @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
+    @State private var showingPassphraseAlert = false
+    @State private var passphrase = ""
+    @State private var passphraseConfirm = ""
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
     
     
     var body: some View {
-        //Spacer()
-        //Label("Configuration", systemImage: "gear")
-        
         Form() {
             Section("Bitcoin Core") {
                 HStack() {
@@ -58,12 +58,7 @@ struct ConfigView: View {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
-                
-                if !bitcoinCoreConnected {
-                    Text(bitcoinCoreError)
-                        .foregroundStyle(.tertiary)
-                }
-                
+                                
                 HStack() {
                     Label("Network", systemImage: "network")
                     
@@ -77,8 +72,6 @@ struct ConfigView: View {
                     }
                     .pickerStyle(.menu)
                     .onChange(of: chain) {
-                        print("update network to \(chain)")
-                        
                         switch chain {
                         case "Mainnet": rpcPort = "8332"
                         case "Signet": rpcPort = "38332"
@@ -90,6 +83,16 @@ struct ConfigView: View {
                         
                         UserDefaults.standard.setValue(chain, forKey: "network")
                         updateRpcPort()
+                    }
+                }
+                
+                if !bitcoinCoreConnected {
+                    Label {
+                        Text(bitcoinCoreError)
+                            .foregroundStyle(.secondary)
+                    } icon: {
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundStyle(.red)
                     }
                 }
             }
@@ -151,7 +154,7 @@ struct ConfigView: View {
                 }
                 
                 Text("Copy the rpcauth text and add it to your bitcoin.conf to authorize Unify to communicate with your node.")
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
             }
             
             Section("RPC Wallet") {
@@ -183,7 +186,34 @@ struct ConfigView: View {
                 }
                 
                 Text("Select a wallet to use. In Fully Noded you can see the wallet filename in the Wallet Info view. Unify works with BIP84 only for now (native segwit) as mixing input and output types is bad for privacy.")
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
+                
+                Button {
+                    showingPassphraseAlert.toggle()
+                } label: {
+                    Text("Create a wallet")
+                }
+                .buttonStyle(.borderedProminent)
+                .alert("Enter your passphrase", isPresented: $showingPassphraseAlert) {
+                    SecureField("Enter your passphrase", text: $passphrase)
+                    SecureField("Enter your passphrase again", text: $passphraseConfirm)
+                    //Button("Create Wallet", action: createWallet)
+                    Button {
+                        if passphrase == passphraseConfirm {
+                            createWallet()
+                        } else {
+                            // show error
+                            print("passphrase mismatch")
+                        }
+                    } label: {
+                        Text("Create Wallet")
+                    }
+                } message: {
+                    Text("We will use the passphrase and the saved BIP39 mnemonic to create a new wallet, if no BIP39 mnemonic is saved we will create a new one.")
+                }
+                
+                Text("This will create a wallet from the BIP39 mnemonic you have added below and prompt you for a passphrase, if blank we will create a new BIP39 mnemonic and prompt you for a passphrase. The passphrase is never saved and you must remember it to sign transactions.")
+                    .foregroundStyle(.secondary)
             }
             
             Section("Nostr") {
@@ -204,6 +234,17 @@ struct ConfigView: View {
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     SecureField("", text: $encSigner)
+                    
+                    Button {
+                        DataManager.deleteAllData(entityName: "Signers") { deleted in
+                            if deleted {
+                                self.encSigner = ""
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(.red)
+                    }
                     
                     Button("Save") {
                         updateSigner()
@@ -239,6 +280,74 @@ struct ConfigView: View {
         
         .alert("Invalid BIP39 Mnemonic.", isPresented: $showInvalidSignerError) {
             Button("OK", role: .cancel) {}
+        }
+    }
+    
+    
+    private func createWallet() {
+        print("createWallet")
+        if encSigner != "" {
+            // Use existing seed words
+            guard let data = encSigner.hexadecimalData else {
+                print("no hex data")
+                return
+            }
+            
+            guard let decrpytedWords = Crypto.decrypt(data),
+                  let words = String(data: decrpytedWords, encoding: .utf8) else {
+                print("not decrypting")
+                return
+            }
+            
+            // get passphrase
+            createWalletFromWords(words: words, passphrase: passphrase)
+        } else {
+            //create new seed words
+            guard let newSeedWords = Keys.seed() else { return }
+            
+            createWalletFromWords(words: newSeedWords, passphrase: passphrase)
+        }
+    }
+    
+    
+    private func createWalletFromWords(words: String, passphrase: String) {
+        print("createWalletFromWords")
+        let wordsData = Data(words.utf8)
+        
+        guard let encryptedSigner = Crypto.encrypt(wordsData) else { return }
+        
+        DataManager.saveEntity(entityName: "Signers", dict: ["encryptedData": encryptedSigner]) { saved in
+            guard saved else {
+                print("encrypted seed not saved")
+                return
+            }
+            
+            convertWordsToDesc(words: words, passphrase: passphrase)
+        }
+    }
+    
+    
+    private func convertWordsToDesc(words: String, passphrase: String) {
+        // let accountMap = ["descriptor": descriptor, "blockheight": 0, "watching": [] as [String], "label": name] as [String : Any]
+        let (bip84Desc, errDesc) = Keys.descriptorFromSigner(words: words, passphrase: passphrase)
+        
+        guard let bip84Desc = bip84Desc else {
+            print("error getting bip84desc: \(errDesc ?? "unknown error")")
+            return
+        }
+        
+        let accMap: [String: Any] = ["descriptor": bip84Desc, "blockheight": 0]
+        
+        CreateWallet.accountMap(accMap) { (success, errorDescription) in
+            guard success else {
+                print("error creating wallet: \(errorDescription ?? "unknown")")
+                
+                return
+            }
+            
+            print("wallet created ✓")
+            
+            // need to update the selected wallet
         }
     }
     
@@ -410,7 +519,7 @@ struct CopyView: View {
                 .truncationMode(.middle)
                 .lineLimit(1)
                 .multilineTextAlignment(.leading)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.primary)
                                     
             Button {
                 #if os(macOS)

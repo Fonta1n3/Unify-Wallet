@@ -29,12 +29,14 @@ struct UnifyWalletApp: App {
     
     
     private func createDefaultCreds() {
-        print("createDefaultCreds")
         DispatchQueue.global(qos: .background).async {
             DataManager.retrieve(entityName: "Credentials") { credentials in
                 guard let _ = credentials else {
                     
-                    guard KeyChain.set(Crypto.privKeyData(), forKey: "encKeyUnify") else {
+                    let randomKey = random_bytes(count: 5).hex
+                    UserDefaults.standard.setValue(randomKey, forKey: "encKeyUnify")
+                    
+                    guard KeyChain.set(Crypto.privKeyData(), forKey: randomKey) else {
                         showNotSavedAlert = true
                         return
                     }

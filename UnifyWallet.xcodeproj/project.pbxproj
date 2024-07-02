@@ -58,6 +58,11 @@
 		0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */; };
 		0A832A4A2C3330A900F25C46 /* ConfigNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */; };
 		0A832A4D2C33319700F25C46 /* HistoryNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */; };
+		0A832A502C338D5700F25C46 /* CreateWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A4F2C338D5700F25C46 /* CreateWallet.swift */; };
+		0A832A522C338D8700F25C46 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A512C338D8700F25C46 /* Descriptor.swift */; };
+		0A832A542C33906D00F25C46 /* DescriptorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A532C33906D00F25C46 /* DescriptorInfo.swift */; };
+		0A832A562C3395A500F25C46 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A552C3395A500F25C46 /* Keys.swift */; };
+		0A832A582C33B1D400F25C46 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A572C33B1D400F25C46 /* NetworkInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -125,6 +130,11 @@
 		0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveNavigationLinkValues.swift; sourceTree = "<group>"; };
 		0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigNavigationLinkValues.swift; sourceTree = "<group>"; };
 		0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryNavigationLinkValues.swift; sourceTree = "<group>"; };
+		0A832A4F2C338D5700F25C46 /* CreateWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWallet.swift; sourceTree = "<group>"; };
+		0A832A512C338D8700F25C46 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
+		0A832A532C33906D00F25C46 /* DescriptorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorInfo.swift; sourceTree = "<group>"; };
+		0A832A552C3395A500F25C46 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		0A832A572C33B1D400F25C46 /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +186,7 @@
 				0A8329D62C29F01100F25C46 /* UnifyWallet.entitlements */,
 				0A8329CF2C29F00F00F25C46 /* UnifyWallet.xcdatamodeld */,
 				0A8329D72C29F01100F25C46 /* Preview Content */,
+				0A832A552C3395A500F25C46 /* Keys.swift */,
 			);
 			path = UnifyWallet;
 			sourceTree = "<group>";
@@ -209,6 +220,9 @@
 				0A8329F22C29F21400F25C46 /* Transaction.swift */,
 				0A8329F32C29F21400F25C46 /* Errors.swift */,
 				0A8329F42C29F21400F25C46 /* DecodedPsbt.swift */,
+				0A832A512C338D8700F25C46 /* Descriptor.swift */,
+				0A832A532C33906D00F25C46 /* DescriptorInfo.swift */,
+				0A832A572C33B1D400F25C46 /* NetworkInfo.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -242,6 +256,7 @@
 				0A832A042C29F21400F25C46 /* RPCAuth.swift */,
 				0A832A052C29F21400F25C46 /* Commands.swift */,
 				0A832A062C29F21400F25C46 /* BitcoinCoreRPC.swift */,
+				0A832A4F2C338D5700F25C46 /* CreateWallet.swift */,
 			);
 			path = BitcoinCore;
 			sourceTree = "<group>";
@@ -396,6 +411,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A832A502C338D5700F25C46 /* CreateWallet.swift in Sources */,
 				0A832A342C29F21400F25C46 /* ReceiveAddOutputView.swift in Sources */,
 				0A832A2A2C29F21400F25C46 /* StreamManager.swift in Sources */,
 				0A832A292C29F21400F25C46 /* NostrFilter.swift in Sources */,
@@ -420,10 +436,12 @@
 				0A832A1A2C29F21400F25C46 /* Utxo.swift in Sources */,
 				0A832A2F2C29F21400F25C46 /* Commands.swift in Sources */,
 				0A832A222C29F21400F25C46 /* KeyChain.swift in Sources */,
+				0A832A562C3395A500F25C46 /* Keys.swift in Sources */,
 				0A832A172C29F21400F25C46 /* Extensions.swift in Sources */,
 				0A832A402C2A3F5D00F25C46 /* SendNavigationLinkValues.swift in Sources */,
 				0A832A162C29F21400F25C46 /* DataManager.swift in Sources */,
 				0A832A442C2A66C700F25C46 /* SelectInputsSendView.swift in Sources */,
+				0A832A582C33B1D400F25C46 /* NetworkInfo.swift in Sources */,
 				0A832A352C29F21400F25C46 /* InvoiceView.swift in Sources */,
 				0A8329CC2C29F00F00F25C46 /* UnifyWalletApp.swift in Sources */,
 				0A832A1B2C29F21400F25C46 /* SignerStruct.swift in Sources */,
@@ -433,9 +451,11 @@
 				0A832A312C29F21400F25C46 /* SignedProposalView.swift in Sources */,
 				0A832A362C29F21400F25C46 /* ReceiveAddInputView.swift in Sources */,
 				0A832A372C29F21400F25C46 /* ConfigView.swift in Sources */,
+				0A832A522C338D8700F25C46 /* Descriptor.swift in Sources */,
 				0A832A212C29F21400F25C46 /* DecodedPsbt.swift in Sources */,
 				0A832A252C29F21400F25C46 /* AVCaptureDevice+bestForBuiltInCamera.swift in Sources */,
 				0A832A232C29F21400F25C46 /* Signer.swift in Sources */,
+				0A832A542C33906D00F25C46 /* DescriptorInfo.swift in Sources */,
 				0A832A282C29F21400F25C46 /* NostrResponse.swift in Sources */,
 				0A832A1D2C29F21400F25C46 /* EventContent.swift in Sources */,
 				0A832A1C2C29F21400F25C46 /* Invoice.swift in Sources */,
