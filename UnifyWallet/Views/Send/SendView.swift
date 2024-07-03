@@ -42,6 +42,7 @@ struct SendView: View, DirectMessageEncrypting {
                     .buttonStyle(.bordered)
                 }
             }
+            
             if showUtxos, let uploadedInvoice = uploadedInvoice {
                 if utxos.count > 0 {
                         List() {
@@ -118,17 +119,6 @@ struct SendView: View, DirectMessageEncrypting {
                 displayError(desc: "No spendable utxos.")
             }
         }
-    }
-}
-
-
-struct NavigationLazyView<Content: View>: View {
-    let build: () -> Content
-    init(_ build: @autoclosure @escaping () -> Content) {
-        self.build = build
-    }
-    var body: Content {
-        build()
     }
 }
 

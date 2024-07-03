@@ -128,14 +128,6 @@ class CreateWallet {
         var recDescIsActive = true
         var changeDescIsActive = true
         
-        if recDesc.hasPrefix("combo") {
-            recDescIsActive = false
-        }
-        
-        if changeDesc.hasPrefix("combo") {
-            changeDescIsActive = false
-        }
-        
         let params:Import_Descriptors = .init([
             "requests":
                 [

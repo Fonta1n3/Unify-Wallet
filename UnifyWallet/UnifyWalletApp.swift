@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 @main
 struct UnifyWalletApp: App {
     @StateObject private var manager: DataManager = DataManager()

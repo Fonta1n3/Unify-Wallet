@@ -8,19 +8,27 @@
 import SwiftUI
 import NostrSDK
 
+
+enum Tabs: String {
+    case receive
+    case send
+    case history
+    case config
+}
+
 struct HomeView: View {
     @StateObject private var sendNavigator = Navigator()
     @StateObject private var receiveNavigator = Navigator()
-    
+    @State var selectedTab: Tabs = .receive
     
     var body: some View {
-        TabView() {
+        TabView(selection: $selectedTab) {
             NavigationStack(path: $receiveNavigator.path) {
                 ReceiveView()
                     .navigationDestination(for: ReceiveNavigationLinkValues.self, destination: { $0 })
-                    .navigationTitle("Receive")
             }
             .environmentObject(receiveNavigator)
+            .tag(Tabs.receive)
             .tabItem {
                 Label {
                     Text("Receive")
@@ -32,10 +40,10 @@ struct HomeView: View {
             
             NavigationStack(path: $sendNavigator.path) {
                 SendView()
-                    .navigationTitle("Send")
                     .navigationDestination(for: SendNavigationLinkValues.self, destination: { $0 })
             }
             .environmentObject(sendNavigator)
+            .tag(Tabs.send)
             .tabItem {
                 Label {
                     Text("Send")
@@ -47,9 +55,9 @@ struct HomeView: View {
             
             NavigationStack() {
                 HistoryView()
-                    .navigationTitle("History")
                     .navigationDestination(for: HistoryNavigationLinkValues.self, destination: { $0 })
             }
+            .tag(Tabs.history)
             .tabItem {
                 Label {
                     Text("History")
@@ -61,9 +69,9 @@ struct HomeView: View {
             
             NavigationStack {
                 ConfigView()
-                    .navigationTitle("Config")
                     .navigationDestination(for: ConfigNavigationLinkValues.self, destination: { $0 })
             }
+            .tag(Tabs.config)
             .tabItem {
                 Label {
                     Text("Config")
@@ -73,8 +81,8 @@ struct HomeView: View {
                 }
             }
         }
+        .navigationTitle(selectedTab.rawValue.capitalized)
         .preferredColorScheme(.dark)
-        
     }
 }
 

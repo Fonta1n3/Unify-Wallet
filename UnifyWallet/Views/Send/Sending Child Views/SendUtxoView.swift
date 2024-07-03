@@ -26,6 +26,9 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     @State private var waitingForResponse = false
     @State private var errorToDisplay = ""
     @State private var showError = false
+    @State private var showingPassphraseAlert = false
+    @State private var passphrase = ""
+    @State private var passphraseConfirm = ""
     
     
     let utxos: [Utxo]
@@ -34,66 +37,97 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     
     
     var body: some View {
-        //Form() {
-            if waitingForResponse {
-                Spinner()
-                    .alert(errorToDisplay, isPresented: $showError) {
-                        Button("OK", role: .cancel) {
-                            sendNavigator.path.removeLast(sendNavigator.path.count)
-                        }
+        if waitingForResponse {
+            Spinner()
+                .alert(errorToDisplay, isPresented: $showError) {
+                    Button("OK", role: .cancel) {
+                        sendNavigator.path.removeLast(sendNavigator.path.count)
                     }
-                    .frame(alignment: .center)
-            } else {
-                if let signedRawTx = signedRawTx,
-                   let signedPsbt = signedPsbt,
-                   let ourKeypair = ourKeypair,
-                   let recipientsPubkey = recipientsPubkey {
-                    
-                    Button("", action: {})
-                        .onAppear {
-                            sendNavigator.path.append(
-                                SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
-                                                                            invoice: invoice,
-                                                                            ourNostrPrivKey: ourKeypair.privateKey.hex,
-                                                                            recipientsPubkey: recipientsPubkey.hex,
-                                                                            psbtProposalString: signedPsbt.description)
-                            )
-                        }
-                        .alert(errorToDisplay, isPresented: $showError) {
-                            Button("OK", role: .cancel) {
-                                sendNavigator.path.removeLast(sendNavigator.path.count)
-                            }
-                        }
-                } else {
-                    VStack(spacing: 20) {
-                        Text("Send payment?")
-                            .font(.title)
-                            .fontWeight(.bold)
-                        
-                        Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!)?")
-                            .font(.body)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                        
-                        Text("The recipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                            .font(.subheadline)
-                        
-                        Button("Send now", action: {
-                            payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos)
-                        })
-                        .padding(.top)
-                    }
-                    .alert(errorToDisplay, isPresented: $showError) {
-                        Button("OK", role: .cancel) {
-                            sendNavigator.path.removeLast(sendNavigator.path.count)
-                        }
-                    }
-                    .padding()
                 }
+                .frame(alignment: .center)
+        } else {
+            if let signedRawTx = signedRawTx,
+               let signedPsbt = signedPsbt,
+               let ourKeypair = ourKeypair,
+               let recipientsPubkey = recipientsPubkey {
+                
+                Button("", action: {})
+                    .onAppear {
+                        sendNavigator.path.append(
+                            SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
+                                                                        invoice: invoice,
+                                                                        ourNostrPrivKey: ourKeypair.privateKey.hex,
+                                                                        recipientsPubkey: recipientsPubkey.hex,
+                                                                        psbtProposalString: signedPsbt.description)
+                        )
+                    }
+                    .alert(errorToDisplay, isPresented: $showError) {
+                        Button("OK", role: .cancel) {
+                            sendNavigator.path.removeLast(sendNavigator.path.count)
+                        }
+                    }
+            } else {
+                VStack(spacing: 20) {
+                    Text("Send payment?")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!)?")
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                    
+                    Text("The recipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                        .font(.subheadline)
+                    
+                    Button {
+                        showingPassphraseAlert.toggle()
+                    } label: {
+                        Text("Sign and send")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .alert("Enter your passphrase", isPresented: $showingPassphraseAlert) {
+                        SecureField("Enter your passphrase", text: $passphrase)
+                            .foregroundColor(.black)
+                        
+                        SecureField("Confirm passphrase", text: $passphraseConfirm)
+                            .foregroundColor(.black)
+                        
+                        HStack() {
+                            Button {
+                                if passphrase == passphraseConfirm {
+                                    payInvoice(invoice: invoice, selectedUtxos: utxosToConsume, utxos: utxos, passphrase: passphrase)
+                                    
+                                } else {
+                                    showError(desc: "Passphrase mismatch, try again.")
+                                }
+                                showingPassphraseAlert.toggle()
+                                
+                            } label: {
+                                Text("Sign and send")
+                            }
+                            
+                            Button("Cancel", role: .cancel) {
+                                passphrase = ""
+                                passphraseConfirm = ""
+                                showingPassphraseAlert.toggle()
+                            }
+                        }                        
+                    } message: {
+                        Text("Unify will create a standard transaction to pay the invoice, the recipient will optionally broadcast the payment or send us a Payjoin proposal. Your passphrase will be used to sign the invoice payment.")
+                    }
+                    .padding(.top)
+                }
+                .alert(errorToDisplay, isPresented: $showError) {
+                    Button("OK", role: .cancel) {
+                        sendNavigator.path.removeLast(sendNavigator.path.count)
+                    }
+                }
+                .padding()
             }
-        //}
+        }
     }
     
     
@@ -104,8 +138,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     }
     
     
-    private func payInvoice(invoice: Invoice, selectedUtxos: [Utxo], utxos: [Utxo]) {
-        print("payInvoice")
+    private func payInvoice(invoice: Invoice, selectedUtxos: [Utxo], utxos: [Utxo], passphrase: String) {
         self.waitingForResponse = true
         let networkSetting = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
         var network: Network = .testnet
@@ -143,14 +176,20 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                 return
             }
             
-            Signer.sign(psbt: psbt, passphrase: nil, completion: { (signedPsbt, rawTx, errorMessage) in
+            Signer.sign(psbt: psbt, passphrase: passphrase, completion: { (signedPsbt, rawTx, errorMessage) in
                 guard let signedPsbt = signedPsbt else {
                     showError(desc: errorMessage ?? "Unknown signing error.")
                     
                     return
                 }
                 
-                let decodeRawP = Decode_Raw_Tx(["hexstring": rawTx!])
+                guard let rawTx = rawTx else {
+                    showError(desc: "No signed raw transaction returned.")
+                    
+                    return
+                }
+                
+                let decodeRawP = Decode_Raw_Tx(["hexstring": rawTx])
                 
                 BitcoinCoreRPC.shared.btcRPC(method: .decoderawtransaction(param: decodeRawP)) { (response, errorDesc) in
                     guard let response = response as? [String: Any] else {
@@ -472,7 +511,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                                             return
                                         }
                                         
-                                        Signer.sign(psbt: payjoinProposal.description, passphrase: nil) { (psbt, rawTx, errorMessage) in
+                                        Signer.sign(psbt: payjoinProposal.description, passphrase: passphrase) { (psbt, rawTx, errorMessage) in
                                             guard let rawTx = rawTx, let signedPsbt = psbt else {
                                                 showError(desc: errorMessage ?? "Unknown error when signing the payjoin proposal.")
                                                 

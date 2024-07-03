@@ -20,8 +20,8 @@ struct ConfigView: View {
     @State private var nostrRelay = UserDefaults.standard.object(forKey: "nostrRelay") as? String ?? "wss://relay.damus.io"
     @State private var showBitcoinCoreError = false
     @State private var bitcoinCoreError = ""
-    @State private var showNoCredsError = false
-    @State private var showInvalidSignerError = false
+    @State private var showError = false
+    @State private var errorDesc = ""
     @State private var encSigner = ""
     @State private var bitcoinCoreConnected = false
     @State private var tint: Color = .red
@@ -29,6 +29,7 @@ struct ConfigView: View {
     @State private var showingPassphraseAlert = false
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
+    @State private var creatingWallet = false
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
     
@@ -58,12 +59,12 @@ struct ConfigView: View {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
-                                
+                
                 HStack() {
                     Label("Network", systemImage: "network")
                     
                     Spacer()
-                                        
+                    
                     Picker("", selection: $chain) {
                         ForEach(chains, id: \.self) {
                             Text($0)
@@ -139,9 +140,9 @@ struct ConfigView: View {
                         .onChange(of: rpcPort) {
                             updateRpcPort()
                         }
-                    #if os(iOS)
+#if os(iOS)
                         .keyboardType(.numberPad)
-                    #endif
+#endif
                 }
                 
                 HStack() {
@@ -157,102 +158,119 @@ struct ConfigView: View {
                     .foregroundStyle(.secondary)
             }
             
-            Section("RPC Wallet") {
-                if rpcWallet == "" {
-                    Label("No wallet selected", systemImage: "wallet.pass")
-                        .foregroundStyle(.red)
-                } else {
-                    Label(rpcWallet, systemImage: "wallet.pass")
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                }
-                
-                if rpcWallets.count == 0 {
-                    Text("No wallets...")
+            if bitcoinCoreConnected {
+                Section("RPC Wallet") {
+                    if rpcWallet == "" {
+                        Label("No wallet selected", systemImage: "wallet.pass")
+                            .foregroundStyle(.red)
+                    } else {
+                        Label(rpcWallet, systemImage: "wallet.pass")
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                    
+                    if rpcWallets.count == 0 {
+                        Text("No wallets...")
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Picker("Select wallet", selection: $rpcWallet) {
+                        ForEach(rpcWallets, id: \.self) { wallet in
+                            Text(wallet)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .tag(wallet)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: rpcWallet) {
+                        UserDefaults.standard.setValue(rpcWallet, forKey: "walletName")
+                    }
+                    
+                    Text("Select a wallet to use. In Fully Noded you can see the wallet filename in the Wallet Info view. Unify works with BIP84 only for now (native segwit) as mixing input and output types is bad for privacy.")
+                        .foregroundStyle(.secondary)
+                    
+                    if !creatingWallet && bitcoinCoreConnected {
+                        Button {
+                            showingPassphraseAlert.toggle()
+                        } label: {
+                            Text("Create a wallet")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .alert("Enter your passphrase", isPresented: $showingPassphraseAlert) {
+                            SecureField("Enter your passphrase", text: $passphrase)
+                                .foregroundStyle(.black)
+                            
+                            SecureField("Confirm passphrase", text: $passphraseConfirm)
+                                .foregroundStyle(.black)
+                            
+                            Button {
+                                if passphrase == passphraseConfirm {
+                                    createWallet()
+                                } else {
+                                    showError(desc: "Passphrase mismatch, try again.")
+                                }
+                            } label: {
+                                Text("Create Wallet")
+                            }
+                            
+                            Button("Cancel", role: .cancel) {
+                                passphrase = ""
+                                passphraseConfirm = ""
+                                showingPassphraseAlert.toggle()
+                            }
+                            
+                        } message: {
+                            Text("We will use the passphrase and the saved BIP39 mnemonic to create a new wallet, if no BIP39 mnemonic is saved we will create a new one.")
+                        }
+                    } else if bitcoinCoreConnected {
+                        ProgressView("Creating wallet...")
+                    }
+                    
+                    
+                    Text("This will create a wallet from the BIP39 mnemonic you have added below and prompt you for a passphrase, if blank we will create a new BIP39 mnemonic and prompt you for a passphrase. The passphrase is never saved and you must remember it to sign transactions.")
                         .foregroundStyle(.secondary)
                 }
                 
-                Picker("Select wallet", selection: $rpcWallet) {
-                    ForEach(rpcWallets, id: \.self) { wallet in
-                        Text(wallet)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                            .tag(wallet)
-                    }
-                }
-                .pickerStyle(.menu)
-                .onChange(of: rpcWallet) {
-                    UserDefaults.standard.setValue(rpcWallet, forKey: "walletName")
-                }
                 
-                Text("Select a wallet to use. In Fully Noded you can see the wallet filename in the Wallet Info view. Unify works with BIP84 only for now (native segwit) as mixing input and output types is bad for privacy.")
-                    .foregroundStyle(.secondary)
-                
-                Button {
-                    showingPassphraseAlert.toggle()
-                } label: {
-                    Text("Create a wallet")
-                }
-                .buttonStyle(.borderedProminent)
-                .alert("Enter your passphrase", isPresented: $showingPassphraseAlert) {
-                    SecureField("Enter your passphrase", text: $passphrase)
-                    SecureField("Enter your passphrase again", text: $passphraseConfirm)
-                    //Button("Create Wallet", action: createWallet)
-                    Button {
-                        if passphrase == passphraseConfirm {
-                            createWallet()
-                        } else {
-                            // show error
-                            print("passphrase mismatch")
-                        }
-                    } label: {
-                        Text("Create Wallet")
-                    }
-                } message: {
-                    Text("We will use the passphrase and the saved BIP39 mnemonic to create a new wallet, if no BIP39 mnemonic is saved we will create a new one.")
-                }
-                
-                Text("This will create a wallet from the BIP39 mnemonic you have added below and prompt you for a passphrase, if blank we will create a new BIP39 mnemonic and prompt you for a passphrase. The passphrase is never saved and you must remember it to sign transactions.")
-                    .foregroundStyle(.secondary)
-            }
-            
-            Section("Nostr") {
-                HStack() {
-                    Label("Relay URL", systemImage: "server.rack")
-                        .frame(maxWidth: 200, alignment: .leading)
-                    
-                    TextField("", text: $nostrRelay)
-                        .onChange(of: nostrRelay) {
-                            updateNostrRelay()
-                        }
-                }
-            }
-            
-            Section("Signer") {
-                HStack() {
-                    Label("BIP39 Menmonic", systemImage: "signature")
-                        .frame(maxWidth: 200, alignment: .leading)
-                    
-                    SecureField("", text: $encSigner)
-                    
-                    Button {
-                        DataManager.deleteAllData(entityName: "Signers") { deleted in
-                            if deleted {
-                                self.encSigner = ""
+                Section("Signer") {
+                    HStack() {
+                        Label("BIP39 Menmonic", systemImage: "signature")
+                            .frame(maxWidth: 200, alignment: .leading)
+                        
+                        SecureField("", text: $encSigner)
+                        
+                        Button {
+                            DataManager.deleteAllData(entityName: "Signers") { deleted in
+                                if deleted {
+                                    self.encSigner = ""
+                                }
                             }
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundStyle(.red)
                         }
-                    } label: {
-                        Image(systemName: "trash")
-                            .foregroundStyle(.red)
+                        
+                        Button("Save") {
+                            updateSigner()
+                        }
                     }
                     
-                    Button("Save") {
-                        updateSigner()
-                    }
+                    Text("Your signer is encrypted before being saved.")
+                        .foregroundStyle(.secondary)
                 }
                 
-                Text("Your signer is encrypted before being saved.")
-                    .foregroundStyle(.tertiary)
+                Section("Nostr") {
+                    HStack() {
+                        Label("Relay URL", systemImage: "server.rack")
+                            .frame(maxWidth: 200, alignment: .leading)
+                        
+                        TextField("", text: $nostrRelay)
+                            .onChange(of: nostrRelay) {
+                                updateNostrRelay()
+                            }
+                    }
+                }
             }
         }
         .autocorrectionDisabled()
@@ -265,45 +283,49 @@ struct ConfigView: View {
         .onSubmit {
             rpcWallets.removeAll()
         }
-        
         .onAppear {
             setValues()
         }
-        
-        .alert(bitcoinCoreError, isPresented: $showBitcoinCoreError) {
-            Button("OK", role: .cancel) {}
-        }
-        
-        .alert(CoreDataError.notPresent.localizedDescription, isPresented: $showNoCredsError) {
-            Button("OK", role: .cancel) {}
-        }
-        
-        .alert("Invalid BIP39 Mnemonic.", isPresented: $showInvalidSignerError) {
+        .alert(errorDesc, isPresented: $showError) {
             Button("OK", role: .cancel) {}
         }
     }
     
     
+    private func showError(desc: String) {
+        errorDesc = desc
+        showError = true
+    }
+    
+    
     private func createWallet() {
-        print("createWallet")
+        creatingWallet = true
+        
         if encSigner != "" {
             // Use existing seed words
             guard let data = encSigner.hexadecimalData else {
-                print("no hex data")
+                creatingWallet = false
+                showError(desc: "Unable to convert encrypted signer to hex string.")
+                
                 return
             }
             
             guard let decrpytedWords = Crypto.decrypt(data),
                   let words = String(data: decrpytedWords, encoding: .utf8) else {
-                print("not decrypting")
+                creatingWallet = false
+                showError(desc: "Unable to decrypt seed words.")
+                
                 return
             }
             
-            // get passphrase
             createWalletFromWords(words: words, passphrase: passphrase)
         } else {
-            //create new seed words
-            guard let newSeedWords = Keys.seed() else { return }
+            guard let newSeedWords = Keys.seed() else {
+                creatingWallet = false
+                showError(desc: "Unable to create seed words.")
+                
+                return
+            }
             
             createWalletFromWords(words: newSeedWords, passphrase: passphrase)
         }
@@ -311,14 +333,20 @@ struct ConfigView: View {
     
     
     private func createWalletFromWords(words: String, passphrase: String) {
-        print("createWalletFromWords")
         let wordsData = Data(words.utf8)
         
-        guard let encryptedSigner = Crypto.encrypt(wordsData) else { return }
+        guard let encryptedSigner = Crypto.encrypt(wordsData) else {
+            creatingWallet = false
+            showError(desc: "Unable to encrypt seed words.")
+            
+            return
+        }
         
         DataManager.saveEntity(entityName: "Signers", dict: ["encryptedData": encryptedSigner]) { saved in
             guard saved else {
-                print("encrypted seed not saved")
+                creatingWallet = false
+                showError(desc: "Unable to save encrypted seed words.")
+                
                 return
             }
             
@@ -328,11 +356,12 @@ struct ConfigView: View {
     
     
     private func convertWordsToDesc(words: String, passphrase: String) {
-        // let accountMap = ["descriptor": descriptor, "blockheight": 0, "watching": [] as [String], "label": name] as [String : Any]
         let (bip84Desc, errDesc) = Keys.descriptorFromSigner(words: words, passphrase: passphrase)
         
         guard let bip84Desc = bip84Desc else {
-            print("error getting bip84desc: \(errDesc ?? "unknown error")")
+            creatingWallet = false
+            showError(desc: "Error getting bip84desc: \(errDesc ?? "unknown error")")
+            
             return
         }
         
@@ -340,14 +369,17 @@ struct ConfigView: View {
         
         CreateWallet.accountMap(accMap) { (success, errorDescription) in
             guard success else {
-                print("error creating wallet: \(errorDescription ?? "unknown")")
+                creatingWallet = false
+                showError(desc: "Error creating wallet: \(errorDescription ?? "unknown")")
                 
                 return
             }
-            
-            print("wallet created ✓")
-            
-            // need to update the selected wallet
+                        
+            creatingWallet = false
+            showError(desc: "Wallet created! This is your bip39 mnemonic, make sure to save it safely or you may lose access to your funds!\n\n\(words)")
+            self.passphrase = ""
+            passphraseConfirm = ""
+            setValues()
         }
     }
     
@@ -366,19 +398,26 @@ struct ConfigView: View {
         
         DataManager.retrieve(entityName: "Credentials", completion: { credentials in
             guard let credentials = credentials else {
-                showNoCredsError = true
+                showError(desc: "No credentials saved, something is not right.")
+                
                 return
             }
             
             guard let encRpcPass = credentials["rpcPass"] as? Data else {
+                showError(desc: "No rpc password saved.")
+                
                 return
             }
             
-            guard let rpcPassData = Crypto.decrypt(encRpcPass) else { print("unable to decrypt rpcpass")
+            guard let rpcPassData = Crypto.decrypt(encRpcPass) else { print()
+                showError(desc: "Unable to decrypt rpcpass.")
+                
                 return
             }
             
             guard let rpcPass = String(data: rpcPassData, encoding: .utf8) else {
+                showError(desc: "Unable to convert rpcpass data to string.")
+                
                 return
             }
             
@@ -387,12 +426,16 @@ struct ConfigView: View {
             rpcPassword = rpcPass
             
             guard let savedRpcUser = credentials["rpcUser"] as? String else {
+                showError(desc: "No rpcuser saved.")
+                
                 return
             }
             
             rpcUser = savedRpcUser
             
             guard let rpcauthcreds = RPCAuth().generateCreds(username: savedRpcUser, password: rpcPass) else {
+                showError(desc: "Unable to generate rpcauth.")
+                
                 return
             }
             
@@ -408,11 +451,15 @@ struct ConfigView: View {
             BitcoinCoreRPC.shared.btcRPC(method: .listwallets) { (response, errorDesc) in
                 guard errorDesc == nil else {
                     bitcoinCoreError = errorDesc!
+                    showError(desc: errorDesc!)
+                    
                     return
                 }
                 
                 guard let wallets = response as? [String] else {
                     bitcoinCoreError = BitcoinCoreError.noWallets.localizedDescription
+                    showError(desc: BitcoinCoreError.noWallets.localizedDescription)
+                    
                     return
                 }
                 
@@ -421,6 +468,8 @@ struct ConfigView: View {
                 
                 guard wallets.count > 0 else {
                     bitcoinCoreError = "No wallets exist yet..."
+                    showError(desc: bitcoinCoreError)
+                    
                     return
                 }
                 
@@ -435,6 +484,8 @@ struct ConfigView: View {
             if updated {
                 self.rpcUser = rpcUser
                 updateRpcAuth()
+            } else {
+                showError(desc: "RPC user not updated.")
             }
         }
     }
@@ -442,10 +493,14 @@ struct ConfigView: View {
     
     private func updateRpcPass(rpcPass: String) {
         guard let rpcPassData = rpcPass.data(using: .utf8) else {
+            showError(desc: "Unable to convert rpc password data to string.")
+            
             return
         }
         
         guard let encryptedRpcPass = Crypto.encrypt(rpcPassData) else {
+            showError(desc: "Unable to encrypt rpcpassword data.")
+            
             return
         }
         
@@ -453,6 +508,8 @@ struct ConfigView: View {
             if updated {
                 self.rpcPassword = rpcPass
                 updateRpcAuth()
+            } else {
+                showError(desc: "RPC password not updated.")
             }
         }
     }
@@ -460,6 +517,8 @@ struct ConfigView: View {
     
     private func updateRpcAuth() {
         guard let rpcauthcreds = RPCAuth().generateCreds(username: rpcUser, password: rpcPassword) else {
+            showError(desc: "Unable to generate rpcauth.")
+            
             return
         }
         
@@ -488,11 +547,14 @@ struct ConfigView: View {
         
         guard let _ = try? BIP39Mnemonic(words: wordsNoSpaces) else {
             encSigner = ""
-            showInvalidSignerError = true
+            showError(desc: "Invalid mnemonic.")
+            
             return
         }
         
         guard let encSeed = Crypto.encrypt(encSigner.data(using: .utf8)!) else {
+            showError(desc: "Unable to encrypt seed.")
+            
             return
         }
         
@@ -500,10 +562,13 @@ struct ConfigView: View {
         
         DataManager.saveEntity(entityName: "Signers", dict: dict) { saved in
             guard saved else {
+                showError(desc: "Unable to save the encrypted signer.")
+                
                 return
             }
             
             encSigner = encSeed.hex
+            showError(desc: "Signer encrypted and saved ✓")
         }
     }
 }

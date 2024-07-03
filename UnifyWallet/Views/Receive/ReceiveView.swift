@@ -77,13 +77,10 @@ struct ReceiveView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
         .onAppear {
-//            DataManager.deleteAllData(entityName: "Credentials") { deleted in
-//                print("deleted: \(deleted)")
-//            }
             amount = ""
             address = ""
             DataManager.retrieve(entityName: "Credentials") { creds in
-                guard let creds = creds else {
+                guard let _ = creds else {
                     errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
                     showError = true
                     return
@@ -103,6 +100,7 @@ struct ReceiveView: View {
         errDesc = desc
         showError = true
     }
+    
     
     private func fetchAddress() {
         let p = Get_New_Address(["address_type": "bech32"])

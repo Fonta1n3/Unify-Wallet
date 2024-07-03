@@ -14,9 +14,20 @@ struct HistoryView: View {
     @State private var showError = false
     @State private var errorToShow = ""
         
+        
     var body: some View {
         Form() {
             List() {
+                HStack() {
+                    Spacer()
+                    
+                    Button() {
+                        listTransactions()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundStyle(.blue)
+                    }
+                }
                 ForEach(transactions, id: \.self) { transaction in
                     let amount = transaction.amount.btcBalanceWithSpaces
                                         
@@ -150,16 +161,6 @@ struct HistoryView: View {
         }
         .alert(errorToShow, isPresented: $showError) {
             Button("OK", role: .cancel) {}
-        }
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button() {
-                    listTransactions()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .foregroundStyle(.blue)
-                }
-            }
         }
     }
 

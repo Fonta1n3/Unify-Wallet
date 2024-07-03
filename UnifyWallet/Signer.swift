@@ -10,13 +10,6 @@ import LibWally
 
 class Signer {
     class func masterKey(words: String, chain: Network, passphrase: String) -> String? {
-//        let networkSetting = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
-//        var chain: Network = .testnet
-//        
-//        if networkSetting == "Mainnet" {
-//            chain = .mainnet
-//        }
-        
         if let mnmemonic = try? BIP39Mnemonic(words: words) {
             let seedHex = mnmemonic.seedHex(passphrase: passphrase)
             if let hdMasterKey = try? HDKey(seed: seedHex, network: chain), let xpriv = hdMasterKey.xpriv {
@@ -195,7 +188,7 @@ class Signer {
                         if var words = String(data: seed, encoding: .utf8) {
                             seed = Data()
                             
-                            if var masterKey = masterKey(words: words, chain: chain, passphrase: "") {
+                            if var masterKey = masterKey(words: words, chain: chain, passphrase: passphrase ?? "") {
                                 words = ""
                                 if var hdkey = try? HDKey(base58: masterKey) {
                                     masterKey = ""

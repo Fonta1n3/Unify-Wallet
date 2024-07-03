@@ -26,6 +26,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
     @State private var hex: String?
     @State private var txSent = false
     @State private var showSpinner = false
+    @State private var showingPassphraseAlert = false
+    @State private var passphrase = ""
+    @State private var passphraseConfirm = ""
     
     
     let invoiceAmount: Double
@@ -37,162 +40,206 @@ struct InvoiceView: View, DirectMessageEncrypting {
     
     
     var body: some View {
-        Form() {
-            if let ourKeypair = ourKeypair {
-                let url = "bitcoin:\(invoiceAddress)?amount=\(invoiceAmount)&pj=nostr:\(ourKeypair.publicKey.npub)"
-                
-                Section("Payjoin Invoice") {
-                    Label("Payjoin over Nostr Invoice", systemImage: "qrcode")
+            Form() {
+                if let ourKeypair = ourKeypair {
+                    let url = "bitcoin:\(invoiceAddress)?amount=\(invoiceAmount)&pj=nostr:\(ourKeypair.publicKey.npub)"
                     
-                    QRView(url: url)
-                    
-                    HStack {
-                        Text(url)
-                            .truncationMode(.middle)
-                            .lineLimit(1)
+                    Section("Payjoin Invoice") {
+                        Label("Payjoin over Nostr Invoice", systemImage: "qrcode")
                         
-                        Button {
-                            #if os(macOS)
-                            NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString(url, forType: .string)
-                            #elseif os(iOS)
-                            UIPasteboard.general.string = url
-                            #endif
-                            showCopiedAlert = true
+                        QRView(url: url)
+                        
+                        HStack {
+                            Text(url)
+                                .truncationMode(.middle)
+                                .lineLimit(1)
                             
-                        } label: {
-                            Image(systemName: "doc.on.doc")
-                        }
-                    }
-                    
-                    HStack() {
-                        Label {
-                            Text("Invoice Address")
-                                .foregroundStyle(.secondary)
-                        } icon: {
-                            Image(systemName: "arrow.down.forward.circle")
-                                .foregroundStyle(.blue)
-                        }
-                        
-                        Text(invoiceAddress)
-                    }
-                    
-                    HStack() {
-                        Label {
-                            Text("Invoice Amount")
-                                .foregroundStyle(.secondary)
-                        } icon: {
-                            Image(systemName: "bitcoinsign.circle")
-                                .foregroundStyle(.blue)
+                            Button {
+                                #if os(macOS)
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(url, forType: .string)
+                                #elseif os(iOS)
+                                UIPasteboard.general.string = url
+                                #endif
+                                showCopiedAlert = true
+                                
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                            }
                         }
                         
-                        Text(invoiceAmount.btcBalanceWithSpaces)
-                    }                    
-                    
-                    Text("Share this invoice with the payee, they will send us the original psbt which we may broadcast as is or optionally create a Payjoin proposal.")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            
-            if let hex = hex {
-                Section("Signed Payment (not yet a Payjoin)") {
-                    Label("Signed Transaction", systemImage: "doc.plaintext")
-                    
-                    HStack() {
-                        Text(hex)
-                            .truncationMode(.middle)
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                            .foregroundStyle(.primary)
-                        
-                        Button {
-                            #if os(macOS)
-                            NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString(hex, forType: .string)
-                            #elseif os(iOS)
-                            UIPasteboard.general.string = hex
-                            #endif
-                            showCopiedAlert = true
+                        HStack() {
+                            Label {
+                                Text("Invoice Address")
+                                    .foregroundStyle(.secondary)
+                            } icon: {
+                                Image(systemName: "arrow.down.forward.circle")
+                                    .foregroundStyle(.blue)
+                            }
                             
-                        } label: {
-                            Image(systemName: "doc.on.doc")
+                            Text(invoiceAddress)
                         }
                         
-                        Button {
-                            sendOriginalPsbt(hex: hex)
-                        } label: {
-                            Text("Broadcast")
+                        HStack() {
+                            Label {
+                                Text("Invoice Amount")
+                                    .foregroundStyle(.secondary)
+                            } icon: {
+                                Image(systemName: "bitcoinsign.circle")
+                                    .foregroundStyle(.blue)
+                            }
+                            
+                            Text(invoiceAmount.btcBalanceWithSpaces)
                         }
-                    }
-                    
-                    Text("Optionally broadcast the received payment from the sender instead of creating a Payjoin transaction. In order to create the Payjoin transaction you must select Create Payjoin Proposal below.")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            
-            if let _ = originalPsbt, let _ = outputAmount, let _ = outputAddress, !paymentBroadcastBySender {
-                if !showSpinner {
-                    Button("Create Payjoin Proposal") {
-                        showSpinner = true
-                        createProposal()
-                    }
-
-                } else {
-                    HStack() {
-                        ProgressView()
                         
-                        Text(" Waiting on response from sender...")
+                        Text("Share this invoice with the payee, they will send us the original psbt which we may broadcast as is or optionally create a Payjoin proposal.")
                             .foregroundStyle(.secondary)
                     }
                 }
-            }
-            
-            if paymentBroadcastBySender {
-                HStack() {
-                    Image(systemName: "checkmark.circle")
-                        .foregroundStyle(.green)
-                                        
-                    Text("Payment received ✓")
-                    
-                    Button {
-                        receiveNavigator.path.removeLast(receiveNavigator.path.count)
-                    } label: {
-                        Text("Done")
+                
+                if let hex = hex {
+                    Section("Signed Payment (not yet a Payjoin)") {
+                        Label("Signed Transaction", systemImage: "doc.plaintext")
+                        
+                        HStack() {
+                            Text(hex)
+                                .truncationMode(.middle)
+                                .lineLimit(1)
+                                .multilineTextAlignment(.leading)
+                                .foregroundStyle(.primary)
+                            
+                            Button {
+                                #if os(macOS)
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(hex, forType: .string)
+                                #elseif os(iOS)
+                                UIPasteboard.general.string = hex
+                                #endif
+                                showCopiedAlert = true
+                                
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                            }
+                            
+                            Button {
+                                sendOriginalPsbt(hex: hex)
+                            } label: {
+                                Text("Broadcast")
+                            }
+                        }
+                        
+                        HStack() {
+                            Label {
+                                Text("The signed raw transaction pays your invoice address and amount.")
+                            } icon: {
+                                Image(systemName: "checkmark.circle")
+                                    .foregroundStyle(.green)
+                            }
+                        }
+                        
+                        Text("Optionally broadcast the received payment from the sender instead of creating a Payjoin transaction. In order to create the Payjoin transaction you must select Create Payjoin Proposal below.")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                if let _ = originalPsbt, let _ = outputAmount, let _ = outputAddress, !paymentBroadcastBySender {
+                    if !showSpinner {
+                        Button {
+                            showingPassphraseAlert.toggle()
+                        } label: {
+                            Text("Create and sign Payjoin proposal")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .alert("Enter your passphrase", isPresented: $showingPassphraseAlert) {
+                            SecureField("Enter your passphrase", text: $passphrase)
+                                .foregroundColor(.black)
+    
+                            SecureField("Confirm passphrase", text: $passphraseConfirm)
+                                .foregroundColor(.black)
+                            
+                            HStack() {
+                                Button {
+                                    if passphrase == passphraseConfirm {
+                                        createProposal(passphrase: passphrase)
+        
+                                    } else {
+                                        showError(desc: "Passphrase mismatch, try again.")
+                                    }
+                                    showingPassphraseAlert.toggle()
+                                    
+                                } label: {
+                                    Text("Create and sign Payjoin proposal")
+                                }
+                                
+                                Button("Cancel", role: .cancel) {
+                                    passphrase = ""
+                                    passphraseConfirm = ""
+                                    showingPassphraseAlert.toggle()
+                                }
+                            }
+                        } message: {
+                            Text("We will use the passphrase to create and sign the Payjoin proposal. This will be sent to the sender to verify and broadcast.")
+                        }
+                        .padding(.top)
+                    } else {
+                        HStack() {
+                            ProgressView()
+                            
+                            Text(" Waiting on response from sender...")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                
+                if paymentBroadcastBySender {
+                    HStack() {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundStyle(.green)
+                                            
+                        Text("Payment received ✓")
+                        
+                        Button {
+                            receiveNavigator.path.removeLast(receiveNavigator.path.count)
+                        } label: {
+                            Text("Done")
+                        }
                     }
                 }
             }
-        }
-        .onAppear(perform: {
-            hex = nil
-            invoice = nil
-            originalPsbt = nil
-            payeePubkey = nil
-            peerNpub = ""
-            paymentBroadcastBySender = false
-            originalPsbtReceived = false
-            txSent = false
-            ourKeypair = nil
-            ourKeypair = Keypair()
-            connectToNostr()
-        })
-        .alert(errorToDisplay, isPresented: $showError) {
-            Button("OK", role: .cancel) {}
-        }
-        .alert("Payment was broadcast by sender ✓", isPresented: $paymentBroadcastBySender) {
-            Button("OK", role: .cancel) {
-                receiveNavigator.path.removeLast(receiveNavigator.path.count)
+            .onAppear(perform: {
+                hex = nil
+                invoice = nil
+                originalPsbt = nil
+                payeePubkey = nil
+                peerNpub = ""
+                paymentBroadcastBySender = false
+                originalPsbtReceived = false
+                txSent = false
+                ourKeypair = nil
+                ourKeypair = Keypair()
+                connectToNostr()
+            })
+            .alert(errorToDisplay, isPresented: $showError) {
+                Button("OK", role: .cancel) {}
             }
-        }
-        .buttonStyle(.bordered)
-        .formStyle(.grouped)
-        .multilineTextAlignment(.leading)
-        .textFieldStyle(.roundedBorder)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+            .alert("Payment was broadcast by sender ✓", isPresented: $paymentBroadcastBySender) {
+                Button("OK", role: .cancel) {
+                    receiveNavigator.path.removeLast(receiveNavigator.path.count)
+                }
+            }
+            .buttonStyle(.bordered)
+            .formStyle(.grouped)
+            .multilineTextAlignment(.leading)
+            .textFieldStyle(.roundedBorder)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+        //}
+        
     }
     
     
     private func sendOriginalPsbt(hex: String) {
+        showSpinner = true
         let p = Send_Raw_Transaction(["hexstring": hex])
         
         BitcoinCoreRPC.shared.btcRPC(method: .sendrawtransaction(p)) { (response, errorDesc) in
@@ -372,7 +419,8 @@ struct InvoiceView: View, DirectMessageEncrypting {
     }
     
     
-    private func createProposal() {
+    private func createProposal(passphrase: String) {
+        showSpinner = true
         var inputsForParams: [[String:Any]] = []
         
         if let additionalInputs = additionalInputs {
@@ -417,7 +465,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                     return
                 }
 
-                Signer.sign(psbt: payjoinProposalUnsigned, passphrase: nil) { (signedPayjoinProposal, rawTx, errorMessage) in
+                Signer.sign(psbt: payjoinProposalUnsigned, passphrase: passphrase) { (signedPayjoinProposal, rawTx, errorMessage) in
                     guard let signedPayjoinProposal = signedPayjoinProposal else {
                         showError(desc: errorMessage ?? "Unknown error signing the payjoin proposal.")
                         
