@@ -79,7 +79,7 @@ struct ReceiveView: View {
         .onAppear {
             amount = ""
             address = ""
-            DataManager.retrieve(entityName: "Credentials") { creds in
+            DataManager.retrieve(entityName: "RPCCredentials") { creds in
                 guard let _ = creds else {
                     errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
                     showError = true

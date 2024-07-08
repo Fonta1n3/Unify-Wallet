@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A2C41B82C3B288500D7EE9D /* TorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41B72C3B288500D7EE9D /* TorClient.swift */; };
+		0A2C41BA2C3B29D300D7EE9D /* TorCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41B92C3B29D300D7EE9D /* TorCreds.swift */; };
+		0A2C41C02C3B4F1400D7EE9D /* Base32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BB2C3B4F1400D7EE9D /* Base32.swift */; };
+		0A2C41C12C3B4F1400D7EE9D /* Base32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BB2C3B4F1400D7EE9D /* Base32.swift */; };
+		0A2C41C22C3B4F1400D7EE9D /* KeyGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BC2C3B4F1400D7EE9D /* KeyGen.swift */; };
+		0A2C41C32C3B4F1400D7EE9D /* KeyGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BC2C3B4F1400D7EE9D /* KeyGen.swift */; };
+		0A2C41C42C3B4F1400D7EE9D /* shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BD2C3B4F1400D7EE9D /* shim.swift */; };
+		0A2C41C52C3B4F1400D7EE9D /* shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BD2C3B4F1400D7EE9D /* shim.swift */; };
+		0A2C41C62C3B4F1400D7EE9D /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BE2C3B4F1400D7EE9D /* StringExtension.swift */; };
+		0A2C41C72C3B4F1400D7EE9D /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41BE2C3B4F1400D7EE9D /* StringExtension.swift */; };
+		0A2C41C82C3B632B00D7EE9D /* TorCreds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41B92C3B29D300D7EE9D /* TorCreds.swift */; };
+		0A2C41C92C3B66E700D7EE9D /* TorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2C41B72C3B288500D7EE9D /* TorClient.swift */; };
 		0A8329CC2C29F00F00F25C46 /* UnifyWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329CB2C29F00F00F25C46 /* UnifyWalletApp.swift */; };
 		0A8329D12C29F00F00F25C46 /* UnifyWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329CF2C29F00F00F25C46 /* UnifyWallet.xcdatamodeld */; };
 		0A8329D52C29F01100F25C46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A8329D42C29F01100F25C46 /* Assets.xcassets */; };
@@ -63,6 +75,64 @@
 		0A832A542C33906D00F25C46 /* DescriptorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A532C33906D00F25C46 /* DescriptorInfo.swift */; };
 		0A832A562C3395A500F25C46 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A552C3395A500F25C46 /* Keys.swift */; };
 		0A832A582C33B1D400F25C46 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A572C33B1D400F25C46 /* NetworkInfo.swift */; };
+		0A9AB0B72C3B198E002551E2 /* CreateWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A4F2C338D5700F25C46 /* CreateWallet.swift */; };
+		0A9AB0B82C3B198E002551E2 /* ReceiveAddOutputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A0D2C29F21400F25C46 /* ReceiveAddOutputView.swift */; };
+		0A9AB0B92C3B198E002551E2 /* StreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329FF2C29F21400F25C46 /* StreamManager.swift */; };
+		0A9AB0BA2C3B198E002551E2 /* NostrFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329FE2C29F21400F25C46 /* NostrFilter.swift */; };
+		0A9AB0BB2C3B198E002551E2 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F22C29F21400F25C46 /* Transaction.swift */; };
+		0A9AB0BC2C3B198E002551E2 /* BroadcastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A0A2C29F21400F25C46 /* BroadcastView.swift */; };
+		0A9AB0BD2C3B198E002551E2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F32C29F21400F25C46 /* Errors.swift */; };
+		0A9AB0BE2C3B198E002551E2 /* ReceiveNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A462C2B596700F25C46 /* ReceiveNavigationLinkValues.swift */; };
+		0A9AB0BF2C3B198E002551E2 /* HistoryNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A4C2C33319700F25C46 /* HistoryNavigationLinkValues.swift */; };
+		0A9AB0C02C3B198E002551E2 /* BitcoinCoreRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A062C29F21400F25C46 /* BitcoinCoreRPC.swift */; };
+		0A9AB0C12C3B198E002551E2 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A152C29F21400F25C46 /* HistoryView.swift */; };
+		0A9AB0C22C3B198E002551E2 /* UnifyWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329CF2C29F00F00F25C46 /* UnifyWallet.xcdatamodeld */; };
+		0A9AB0C32C3B198E002551E2 /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329EC2C29F21400F25C46 /* Messages.swift */; };
+		0A9AB0C42C3B198E002551E2 /* RPCPort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329EB2C29F21400F25C46 /* RPCPort.swift */; };
+		0A9AB0C52C3B198E002551E2 /* CodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F82C29F21400F25C46 /* CodeScanner.swift */; };
+		0A9AB0C62C3B198E002551E2 /* DecodedRawTx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F12C29F21400F25C46 /* DecodedRawTx.swift */; };
+		0A9AB0C72C3B198E002551E2 /* ConfigNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A492C3330A900F25C46 /* ConfigNavigationLinkValues.swift */; };
+		0A9AB0C82C3B198E002551E2 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329FA2C29F21400F25C46 /* ScannerViewController.swift */; };
+		0A9AB0C92C3B198E002551E2 /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329FB2C29F21400F25C46 /* Crypto.swift */; };
+		0A9AB0CA2C3B198E002551E2 /* ReceiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A142C29F21400F25C46 /* ReceiveView.swift */; };
+		0A9AB0CB2C3B198E002551E2 /* RPCParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A032C29F21400F25C46 /* RPCParams.swift */; };
+		0A9AB0CC2C3B198E002551E2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A122C29F21400F25C46 /* HomeView.swift */; };
+		0A9AB0CD2C3B198E002551E2 /* Utxo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329ED2C29F21400F25C46 /* Utxo.swift */; };
+		0A9AB0CE2C3B198E002551E2 /* Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A052C29F21400F25C46 /* Commands.swift */; };
+		0A9AB0CF2C3B198E002551E2 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F52C29F21400F25C46 /* KeyChain.swift */; };
+		0A9AB0D02C3B198E002551E2 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A552C3395A500F25C46 /* Keys.swift */; };
+		0A9AB0D12C3B198E002551E2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329E92C29F21400F25C46 /* Extensions.swift */; };
+		0A9AB0D22C3B198E002551E2 /* SendNavigationLinkValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A3F2C2A3F5C00F25C46 /* SendNavigationLinkValues.swift */; };
+		0A9AB0D32C3B198E002551E2 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329E82C29F21400F25C46 /* DataManager.swift */; };
+		0A9AB0D42C3B198E002551E2 /* SelectInputsSendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A432C2A66C700F25C46 /* SelectInputsSendView.swift */; };
+		0A9AB0D52C3B198E002551E2 /* NetworkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A572C33B1D400F25C46 /* NetworkInfo.swift */; };
+		0A9AB0D62C3B198E002551E2 /* InvoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A0E2C29F21400F25C46 /* InvoiceView.swift */; };
+		0A9AB0D72C3B198E002551E2 /* UnifyWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329CB2C29F00F00F25C46 /* UnifyWalletApp.swift */; };
+		0A9AB0D82C3B198E002551E2 /* SignerStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329EE2C29F21400F25C46 /* SignerStruct.swift */; };
+		0A9AB0D92C3B198E002551E2 /* SendUtxoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A0B2C29F21400F25C46 /* SendUtxoView.swift */; };
+		0A9AB0DA2C3B198E002551E2 /* RPCAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A042C29F21400F25C46 /* RPCAuth.swift */; };
+		0A9AB0DB2C3B198E002551E2 /* NostrEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A002C29F21400F25C46 /* NostrEvent.swift */; };
+		0A9AB0DC2C3B198E002551E2 /* SignedProposalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A092C29F21400F25C46 /* SignedProposalView.swift */; };
+		0A9AB0DD2C3B198E002551E2 /* ReceiveAddInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A0F2C29F21400F25C46 /* ReceiveAddInputView.swift */; };
+		0A9AB0DE2C3B198E002551E2 /* ConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A112C29F21400F25C46 /* ConfigView.swift */; };
+		0A9AB0DF2C3B198E002551E2 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A512C338D8700F25C46 /* Descriptor.swift */; };
+		0A9AB0E02C3B198E002551E2 /* DecodedPsbt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F42C29F21400F25C46 /* DecodedPsbt.swift */; };
+		0A9AB0E12C3B198E002551E2 /* AVCaptureDevice+bestForBuiltInCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F92C29F21400F25C46 /* AVCaptureDevice+bestForBuiltInCamera.swift */; };
+		0A9AB0E22C3B198E002551E2 /* Signer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F62C29F21400F25C46 /* Signer.swift */; };
+		0A9AB0E32C3B198E002551E2 /* DescriptorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A532C33906D00F25C46 /* DescriptorInfo.swift */; };
+		0A9AB0E42C3B198E002551E2 /* NostrResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329FD2C29F21400F25C46 /* NostrResponse.swift */; };
+		0A9AB0E52C3B198E002551E2 /* EventContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329F02C29F21400F25C46 /* EventContent.swift */; };
+		0A9AB0E62C3B198E002551E2 /* Invoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8329EF2C29F21400F25C46 /* Invoice.swift */; };
+		0A9AB0E72C3B198E002551E2 /* SendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A132C29F21400F25C46 /* SendView.swift */; };
+		0A9AB0E82C3B198E002551E2 /* Bech32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A832A012C29F21400F25C46 /* Bech32.swift */; };
+		0A9AB0EA2C3B198E002551E2 /* NostrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 0A9AB0B22C3B198E002551E2 /* NostrSDK */; };
+		0A9AB0EB2C3B198E002551E2 /* SwiftUICoreImage in Frameworks */ = {isa = PBXBuildFile; productRef = 0A9AB0B42C3B198E002551E2 /* SwiftUICoreImage */; };
+		0A9AB0EC2C3B198E002551E2 /* LibWally.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8329E52C29F1E800F25C46 /* LibWally.xcframework */; };
+		0A9AB0EE2C3B198E002551E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A8329D82C29F01100F25C46 /* Preview Assets.xcassets */; };
+		0A9AB0EF2C3B198E002551E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A8329D42C29F01100F25C46 /* Assets.xcassets */; };
+		0A9AB0F12C3B198E002551E2 /* LibWally.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8329E52C29F1E800F25C46 /* LibWally.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		72E8EBC0F91BA7774683CFA3 /* Pods_UnifyWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 560ADF9DDDB431D7C6A7E9BC /* Pods_UnifyWallet.framework */; };
+		E149FD1ECBDA0060C12B0ED2 /* Pods_UnifyWalletmacOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A0C438B71D5FD0248DF6734 /* Pods_UnifyWalletmacOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,9 +147,27 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0A9AB0F02C3B198E002551E2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0A9AB0F12C3B198E002551E2 /* LibWally.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00361616F71953F479384C4F /* Pods-UnifyWalletmacOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnifyWalletmacOS.release.xcconfig"; path = "Target Support Files/Pods-UnifyWalletmacOS/Pods-UnifyWalletmacOS.release.xcconfig"; sourceTree = "<group>"; };
+		0A2C41B72C3B288500D7EE9D /* TorClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorClient.swift; sourceTree = "<group>"; };
+		0A2C41B92C3B29D300D7EE9D /* TorCreds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorCreds.swift; sourceTree = "<group>"; };
+		0A2C41BB2C3B4F1400D7EE9D /* Base32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base32.swift; sourceTree = "<group>"; };
+		0A2C41BC2C3B4F1400D7EE9D /* KeyGen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyGen.swift; sourceTree = "<group>"; };
+		0A2C41BD2C3B4F1400D7EE9D /* shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
+		0A2C41BE2C3B4F1400D7EE9D /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		0A8329C82C29F00F00F25C46 /* UnifyWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnifyWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A8329CB2C29F00F00F25C46 /* UnifyWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifyWalletApp.swift; sourceTree = "<group>"; };
 		0A8329D02C29F00F00F25C46 /* UnifyWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UnifyWallet.xcdatamodel; sourceTree = "<group>"; };
@@ -135,6 +223,12 @@
 		0A832A532C33906D00F25C46 /* DescriptorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorInfo.swift; sourceTree = "<group>"; };
 		0A832A552C3395A500F25C46 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		0A832A572C33B1D400F25C46 /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
+		0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnifyWalletmacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A0C438B71D5FD0248DF6734 /* Pods_UnifyWalletmacOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnifyWalletmacOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		560ADF9DDDB431D7C6A7E9BC /* Pods_UnifyWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnifyWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE13A5377A734BAA9755D892 /* Pods-UnifyWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnifyWallet.debug.xcconfig"; path = "Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet.debug.xcconfig"; sourceTree = "<group>"; };
+		C32143FAA0FABB83F230B061 /* Pods-UnifyWalletmacOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnifyWalletmacOS.debug.xcconfig"; path = "Target Support Files/Pods-UnifyWalletmacOS/Pods-UnifyWalletmacOS.debug.xcconfig"; sourceTree = "<group>"; };
+		E6430E360E76D9CF461C85DB /* Pods-UnifyWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnifyWallet.release.xcconfig"; path = "Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,17 +239,42 @@
 				0A8329E12C29F16C00F25C46 /* NostrSDK in Frameworks */,
 				0A8329E42C29F1BB00F25C46 /* SwiftUICoreImage in Frameworks */,
 				0A832A3C2C29F45800F25C46 /* LibWally.xcframework in Frameworks */,
+				72E8EBC0F91BA7774683CFA3 /* Pods_UnifyWallet.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0A9AB0E92C3B198E002551E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A9AB0EA2C3B198E002551E2 /* NostrSDK in Frameworks */,
+				0A9AB0EB2C3B198E002551E2 /* SwiftUICoreImage in Frameworks */,
+				0A9AB0EC2C3B198E002551E2 /* LibWally.xcframework in Frameworks */,
+				E149FD1ECBDA0060C12B0ED2 /* Pods_UnifyWalletmacOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A2C41BF2C3B4F1400D7EE9D /* Base32 */ = {
+			isa = PBXGroup;
+			children = (
+				0A2C41BB2C3B4F1400D7EE9D /* Base32.swift */,
+				0A2C41BC2C3B4F1400D7EE9D /* KeyGen.swift */,
+				0A2C41BD2C3B4F1400D7EE9D /* shim.swift */,
+				0A2C41BE2C3B4F1400D7EE9D /* StringExtension.swift */,
+			);
+			path = Base32;
+			sourceTree = "<group>";
+		};
 		0A8329BF2C29F00F00F25C46 = {
 			isa = PBXGroup;
 			children = (
 				0A8329CA2C29F00F00F25C46 /* UnifyWallet */,
 				0A8329C92C29F00F00F25C46 /* Products */,
+				C7EF38AFCE0F7DC024C5A76C /* Pods */,
+				4E6347A8DFC798D7C6BF31D2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -163,6 +282,7 @@
 			isa = PBXGroup;
 			children = (
 				0A8329C82C29F00F00F25C46 /* UnifyWallet.app */,
+				0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +290,7 @@
 		0A8329CA2C29F00F00F25C46 /* UnifyWallet */ = {
 			isa = PBXGroup;
 			children = (
+				0A2C41BF2C3B4F1400D7EE9D /* Base32 */,
 				0A832A022C29F21400F25C46 /* BitcoinCore */,
 				0A8329F72C29F21400F25C46 /* CodeScanner */,
 				0A8329E72C29F21400F25C46 /* CoreData */,
@@ -187,6 +308,7 @@
 				0A8329CF2C29F00F00F25C46 /* UnifyWallet.xcdatamodeld */,
 				0A8329D72C29F01100F25C46 /* Preview Content */,
 				0A832A552C3395A500F25C46 /* Keys.swift */,
+				0A2C41B72C3B288500D7EE9D /* TorClient.swift */,
 			);
 			path = UnifyWallet;
 			sourceTree = "<group>";
@@ -223,6 +345,7 @@
 				0A832A512C338D8700F25C46 /* Descriptor.swift */,
 				0A832A532C33906D00F25C46 /* DescriptorInfo.swift */,
 				0A832A572C33B1D400F25C46 /* NetworkInfo.swift */,
+				0A2C41B92C3B29D300D7EE9D /* TorCreds.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -332,6 +455,26 @@
 			path = History;
 			sourceTree = "<group>";
 		};
+		4E6347A8DFC798D7C6BF31D2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				560ADF9DDDB431D7C6A7E9BC /* Pods_UnifyWallet.framework */,
+				2A0C438B71D5FD0248DF6734 /* Pods_UnifyWalletmacOS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C7EF38AFCE0F7DC024C5A76C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AE13A5377A734BAA9755D892 /* Pods-UnifyWallet.debug.xcconfig */,
+				E6430E360E76D9CF461C85DB /* Pods-UnifyWallet.release.xcconfig */,
+				C32143FAA0FABB83F230B061 /* Pods-UnifyWalletmacOS.debug.xcconfig */,
+				00361616F71953F479384C4F /* Pods-UnifyWalletmacOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -339,10 +482,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A8329DC2C29F01100F25C46 /* Build configuration list for PBXNativeTarget "UnifyWallet" */;
 			buildPhases = (
+				CFD670F787EDDF355243B9F2 /* [CP] Check Pods Manifest.lock */,
 				0A8329C42C29F00F00F25C46 /* Sources */,
 				0A8329C52C29F00F00F25C46 /* Frameworks */,
 				0A8329C62C29F00F00F25C46 /* Resources */,
 				0A832A3E2C29F45800F25C46 /* Embed Frameworks */,
+				0D493E91AE50119884DBADBC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -355,6 +500,30 @@
 			);
 			productName = UnifyWallet;
 			productReference = 0A8329C82C29F00F00F25C46 /* UnifyWallet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0A9AB0B12C3B198E002551E2 /* UnifyWalletmacOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletmacOS" */;
+			buildPhases = (
+				CCFC471BD4CF29F863132118 /* [CP] Check Pods Manifest.lock */,
+				0A9AB0B62C3B198E002551E2 /* Sources */,
+				0A9AB0E92C3B198E002551E2 /* Frameworks */,
+				0A9AB0ED2C3B198E002551E2 /* Resources */,
+				0A9AB0F02C3B198E002551E2 /* Embed Frameworks */,
+				5540AF01163EC046D6719008 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnifyWalletmacOS;
+			packageProductDependencies = (
+				0A9AB0B22C3B198E002551E2 /* NostrSDK */,
+				0A9AB0B42C3B198E002551E2 /* SwiftUICoreImage */,
+			);
+			productName = UnifyWallet;
+			productReference = 0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -390,6 +559,7 @@
 			projectRoot = "";
 			targets = (
 				0A8329C72C29F00F00F25C46 /* UnifyWallet */,
+				0A9AB0B12C3B198E002551E2 /* UnifyWalletmacOS */,
 			);
 		};
 /* End PBXProject section */
@@ -404,7 +574,97 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0A9AB0ED2C3B198E002551E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A9AB0EE2C3B198E002551E2 /* Preview Assets.xcassets in Resources */,
+				0A9AB0EF2C3B198E002551E2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0D493E91AE50119884DBADBC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5540AF01163EC046D6719008 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnifyWalletmacOS/Pods-UnifyWalletmacOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnifyWalletmacOS/Pods-UnifyWalletmacOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UnifyWalletmacOS/Pods-UnifyWalletmacOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CCFC471BD4CF29F863132118 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UnifyWalletmacOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CFD670F787EDDF355243B9F2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UnifyWallet-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0A8329C42C29F00F00F25C46 /* Sources */ = {
@@ -417,11 +677,14 @@
 				0A832A292C29F21400F25C46 /* NostrFilter.swift in Sources */,
 				0A832A1F2C29F21400F25C46 /* Transaction.swift in Sources */,
 				0A832A322C29F21400F25C46 /* BroadcastView.swift in Sources */,
+				0A2C41C22C3B4F1400D7EE9D /* KeyGen.swift in Sources */,
 				0A832A202C29F21400F25C46 /* Errors.swift in Sources */,
 				0A832A472C2B596700F25C46 /* ReceiveNavigationLinkValues.swift in Sources */,
 				0A832A4D2C33319700F25C46 /* HistoryNavigationLinkValues.swift in Sources */,
 				0A832A302C29F21400F25C46 /* BitcoinCoreRPC.swift in Sources */,
 				0A832A3B2C29F21400F25C46 /* HistoryView.swift in Sources */,
+				0A2C41C02C3B4F1400D7EE9D /* Base32.swift in Sources */,
+				0A2C41B82C3B288500D7EE9D /* TorClient.swift in Sources */,
 				0A8329D12C29F00F00F25C46 /* UnifyWallet.xcdatamodeld in Sources */,
 				0A832A192C29F21400F25C46 /* Messages.swift in Sources */,
 				0A832A182C29F21400F25C46 /* RPCPort.swift in Sources */,
@@ -433,15 +696,18 @@
 				0A832A3A2C29F21400F25C46 /* ReceiveView.swift in Sources */,
 				0A832A2D2C29F21400F25C46 /* RPCParams.swift in Sources */,
 				0A832A382C29F21400F25C46 /* HomeView.swift in Sources */,
+				0A2C41BA2C3B29D300D7EE9D /* TorCreds.swift in Sources */,
 				0A832A1A2C29F21400F25C46 /* Utxo.swift in Sources */,
 				0A832A2F2C29F21400F25C46 /* Commands.swift in Sources */,
 				0A832A222C29F21400F25C46 /* KeyChain.swift in Sources */,
 				0A832A562C3395A500F25C46 /* Keys.swift in Sources */,
+				0A2C41C42C3B4F1400D7EE9D /* shim.swift in Sources */,
 				0A832A172C29F21400F25C46 /* Extensions.swift in Sources */,
 				0A832A402C2A3F5D00F25C46 /* SendNavigationLinkValues.swift in Sources */,
 				0A832A162C29F21400F25C46 /* DataManager.swift in Sources */,
 				0A832A442C2A66C700F25C46 /* SelectInputsSendView.swift in Sources */,
 				0A832A582C33B1D400F25C46 /* NetworkInfo.swift in Sources */,
+				0A2C41C62C3B4F1400D7EE9D /* StringExtension.swift in Sources */,
 				0A832A352C29F21400F25C46 /* InvoiceView.swift in Sources */,
 				0A8329CC2C29F00F00F25C46 /* UnifyWalletApp.swift in Sources */,
 				0A832A1B2C29F21400F25C46 /* SignerStruct.swift in Sources */,
@@ -461,6 +727,69 @@
 				0A832A1C2C29F21400F25C46 /* Invoice.swift in Sources */,
 				0A832A392C29F21400F25C46 /* SendView.swift in Sources */,
 				0A832A2C2C29F21400F25C46 /* Bech32.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0A9AB0B62C3B198E002551E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A9AB0B72C3B198E002551E2 /* CreateWallet.swift in Sources */,
+				0A9AB0B82C3B198E002551E2 /* ReceiveAddOutputView.swift in Sources */,
+				0A9AB0B92C3B198E002551E2 /* StreamManager.swift in Sources */,
+				0A9AB0BA2C3B198E002551E2 /* NostrFilter.swift in Sources */,
+				0A9AB0BB2C3B198E002551E2 /* Transaction.swift in Sources */,
+				0A9AB0BC2C3B198E002551E2 /* BroadcastView.swift in Sources */,
+				0A9AB0BD2C3B198E002551E2 /* Errors.swift in Sources */,
+				0A9AB0BE2C3B198E002551E2 /* ReceiveNavigationLinkValues.swift in Sources */,
+				0A9AB0BF2C3B198E002551E2 /* HistoryNavigationLinkValues.swift in Sources */,
+				0A9AB0C02C3B198E002551E2 /* BitcoinCoreRPC.swift in Sources */,
+				0A2C41C12C3B4F1400D7EE9D /* Base32.swift in Sources */,
+				0A9AB0C12C3B198E002551E2 /* HistoryView.swift in Sources */,
+				0A9AB0C22C3B198E002551E2 /* UnifyWallet.xcdatamodeld in Sources */,
+				0A9AB0C32C3B198E002551E2 /* Messages.swift in Sources */,
+				0A9AB0C42C3B198E002551E2 /* RPCPort.swift in Sources */,
+				0A9AB0C52C3B198E002551E2 /* CodeScanner.swift in Sources */,
+				0A9AB0C62C3B198E002551E2 /* DecodedRawTx.swift in Sources */,
+				0A9AB0C72C3B198E002551E2 /* ConfigNavigationLinkValues.swift in Sources */,
+				0A9AB0C82C3B198E002551E2 /* ScannerViewController.swift in Sources */,
+				0A9AB0C92C3B198E002551E2 /* Crypto.swift in Sources */,
+				0A9AB0CA2C3B198E002551E2 /* ReceiveView.swift in Sources */,
+				0A9AB0CB2C3B198E002551E2 /* RPCParams.swift in Sources */,
+				0A9AB0CC2C3B198E002551E2 /* HomeView.swift in Sources */,
+				0A9AB0CD2C3B198E002551E2 /* Utxo.swift in Sources */,
+				0A9AB0CE2C3B198E002551E2 /* Commands.swift in Sources */,
+				0A9AB0CF2C3B198E002551E2 /* KeyChain.swift in Sources */,
+				0A9AB0D02C3B198E002551E2 /* Keys.swift in Sources */,
+				0A9AB0D12C3B198E002551E2 /* Extensions.swift in Sources */,
+				0A9AB0D22C3B198E002551E2 /* SendNavigationLinkValues.swift in Sources */,
+				0A9AB0D32C3B198E002551E2 /* DataManager.swift in Sources */,
+				0A2C41C32C3B4F1400D7EE9D /* KeyGen.swift in Sources */,
+				0A9AB0D42C3B198E002551E2 /* SelectInputsSendView.swift in Sources */,
+				0A2C41C72C3B4F1400D7EE9D /* StringExtension.swift in Sources */,
+				0A9AB0D52C3B198E002551E2 /* NetworkInfo.swift in Sources */,
+				0A9AB0D62C3B198E002551E2 /* InvoiceView.swift in Sources */,
+				0A9AB0D72C3B198E002551E2 /* UnifyWalletApp.swift in Sources */,
+				0A9AB0D82C3B198E002551E2 /* SignerStruct.swift in Sources */,
+				0A9AB0D92C3B198E002551E2 /* SendUtxoView.swift in Sources */,
+				0A2C41C92C3B66E700D7EE9D /* TorClient.swift in Sources */,
+				0A9AB0DA2C3B198E002551E2 /* RPCAuth.swift in Sources */,
+				0A9AB0DB2C3B198E002551E2 /* NostrEvent.swift in Sources */,
+				0A9AB0DC2C3B198E002551E2 /* SignedProposalView.swift in Sources */,
+				0A9AB0DD2C3B198E002551E2 /* ReceiveAddInputView.swift in Sources */,
+				0A9AB0DE2C3B198E002551E2 /* ConfigView.swift in Sources */,
+				0A9AB0DF2C3B198E002551E2 /* Descriptor.swift in Sources */,
+				0A9AB0E02C3B198E002551E2 /* DecodedPsbt.swift in Sources */,
+				0A9AB0E12C3B198E002551E2 /* AVCaptureDevice+bestForBuiltInCamera.swift in Sources */,
+				0A9AB0E22C3B198E002551E2 /* Signer.swift in Sources */,
+				0A2C41C82C3B632B00D7EE9D /* TorCreds.swift in Sources */,
+				0A2C41C52C3B4F1400D7EE9D /* shim.swift in Sources */,
+				0A9AB0E32C3B198E002551E2 /* DescriptorInfo.swift in Sources */,
+				0A9AB0E42C3B198E002551E2 /* NostrResponse.swift in Sources */,
+				0A9AB0E52C3B198E002551E2 /* EventContent.swift in Sources */,
+				0A9AB0E62C3B198E002551E2 /* Invoice.swift in Sources */,
+				0A9AB0E72C3B198E002551E2 /* SendView.swift in Sources */,
+				0A9AB0E82C3B198E002551E2 /* Bech32.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,6 +912,7 @@
 		};
 		0A8329DD2C29F01100F25C46 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE13A5377A734BAA9755D892 /* Pods-UnifyWallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -593,6 +923,9 @@
 				DEVELOPMENT_TEAM = 8JHDU5M9KD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -606,13 +939,16 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dentonllc.UnifyWallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -621,6 +957,7 @@
 		};
 		0A8329DE2C29F01100F25C46 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6430E360E76D9CF461C85DB /* Pods-UnifyWallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -631,6 +968,9 @@
 				DEVELOPMENT_TEAM = 8JHDU5M9KD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -650,10 +990,99 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dentonllc.UnifyWallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0A9AB0F32C3B198E002551E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C32143FAA0FABB83F230B061 /* Pods-UnifyWalletmacOS.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UnifyWallet/UnifyWallet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"UnifyWallet/Preview Content\"";
+				DEVELOPMENT_TEAM = 8JHDU5M9KD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dentonllc.UnifyWallet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		0A9AB0F42C3B198E002551E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 00361616F71953F479384C4F /* Pods-UnifyWalletmacOS.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UnifyWallet/UnifyWallet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"UnifyWallet/Preview Content\"";
+				DEVELOPMENT_TEAM = 8JHDU5M9KD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dentonllc.UnifyWallet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -678,6 +1107,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletmacOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A9AB0F32C3B198E002551E2 /* Debug */,
+				0A9AB0F42C3B198E002551E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -697,6 +1135,22 @@
 				revision = 87c6dfcf6c0bd87097984348062979caab458ac3;
 			};
 		};
+		0A9AB0B32C3B198E002551E2 /* XCRemoteSwiftPackageReference "nostr-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nostr-sdk/nostr-sdk-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.1.0;
+			};
+		};
+		0A9AB0B52C3B198E002551E2 /* XCRemoteSwiftPackageReference "SwiftUICoreImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danwood/SwiftUICoreImage.git";
+			requirement = {
+				kind = revision;
+				revision = 87c6dfcf6c0bd87097984348062979caab458ac3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -708,6 +1162,16 @@
 		0A8329E32C29F1BB00F25C46 /* SwiftUICoreImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0A8329E22C29F1BB00F25C46 /* XCRemoteSwiftPackageReference "SwiftUICoreImage" */;
+			productName = SwiftUICoreImage;
+		};
+		0A9AB0B22C3B198E002551E2 /* NostrSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A9AB0B32C3B198E002551E2 /* XCRemoteSwiftPackageReference "nostr-sdk-ios" */;
+			productName = NostrSDK;
+		};
+		0A9AB0B42C3B198E002551E2 /* SwiftUICoreImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A9AB0B52C3B198E002551E2 /* XCRemoteSwiftPackageReference "SwiftUICoreImage" */;
 			productName = SwiftUICoreImage;
 		};
 /* End XCSwiftPackageProductDependency section */

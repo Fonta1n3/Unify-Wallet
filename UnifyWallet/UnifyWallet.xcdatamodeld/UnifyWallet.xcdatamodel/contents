@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Credentials" representedClassName="Credentials" syncable="YES" codeGenerationType="class">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="BIP39Signer" representedClassName="BIP39Signer" syncable="YES" codeGenerationType="class">
+        <attribute name="encryptedData" optional="YES" attributeType="Binary"/>
+    </entity>
+    <entity name="RPCCredentials" representedClassName="RPCCredentials" syncable="YES" codeGenerationType="class">
+        <attribute name="rpcAddress" optional="YES" attributeType="String"/>
         <attribute name="rpcPass" optional="YES" attributeType="Binary"/>
+        <attribute name="rpcPort" optional="YES" attributeType="String"/>
         <attribute name="rpcUser" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Signers" representedClassName="Signers" syncable="YES" codeGenerationType="class">
-        <attribute name="encryptedData" optional="YES" attributeType="Binary"/>
+    <entity name="TorCredentials" representedClassName="TorCredentials" syncable="YES" codeGenerationType="class">
+        <attribute name="encryptedPrivateKey" optional="YES" attributeType="Binary"/>
+        <attribute name="publicKey" optional="YES" attributeType="String"/>
     </entity>
 </model>

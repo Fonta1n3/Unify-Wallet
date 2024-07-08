@@ -9,8 +9,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 import NostrSDK
 import LibWally
+//import Tor
 
 struct ConfigView: View {
+    let torManager = TorClient.sharedInstance
+
     @State private var rpcUser = "Unify"
     @State private var rpcPassword = ""
     @State private var rpcAuth = ""
@@ -30,6 +33,13 @@ struct ConfigView: View {
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
     @State private var creatingWallet = false
+    @State private var torEnabled = false
+    @State private var torProgress = 0.0
+    @State private var torConnected = false
+    @State private var torDifficulties = false
+    @State private var encryptedTorAuthKey = ""
+    @State private var torAuthPubkey = ""
+    @State private var rpcAddress = "127.0.0.1"
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
     
@@ -38,7 +48,7 @@ struct ConfigView: View {
         Form() {
             Section("Bitcoin Core") {
                 HStack() {
-                    Label("Bitcoin Core Status", systemImage: "server.rack")
+                    Label("Status", systemImage: "server.rack")
                     
                     Spacer()
                     
@@ -100,7 +110,7 @@ struct ConfigView: View {
             
             Section("RPC Credentials") {
                 HStack() {
-                    Label("RPC User", systemImage: "person.circle")
+                    Label("User", systemImage: "person.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -112,7 +122,7 @@ struct ConfigView: View {
                 }
                 
                 HStack() {
-                    Label("RPC Password", systemImage: "ellipsis.rectangle.fill")
+                    Label("Password", systemImage: "ellipsis.rectangle.fill")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -131,7 +141,16 @@ struct ConfigView: View {
                 }
                 
                 HStack() {
-                    Label("RPC Port", systemImage: "network")
+                    Label("Auth", systemImage: "key.horizontal.fill")
+                        .frame(maxWidth: 200, alignment: .leading)
+                    
+                    Spacer()
+                    
+                    CopyView(item: rpcAuth)
+                }
+                
+                HStack() {
+                    Label("Port", systemImage: "network")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -146,16 +165,106 @@ struct ConfigView: View {
                 }
                 
                 HStack() {
-                    Label("RPC Authentication", systemImage: "key.horizontal.fill")
+                    Label("Address", systemImage: "antenna.radiowaves.left.and.right.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
                     
-                    CopyView(item: rpcAuth)
+                    TextField("", text: $rpcAddress)
+                        .truncationMode(.middle)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                    
+                    Button {
+                        print("update rpc address")
+                    } label: {
+                        Text("Save")
+                    }
                 }
                 
-                Text("Copy the rpcauth text and add it to your bitcoin.conf to authorize Unify to communicate with your node.")
+                Text("Copy the auth text to add it to your bitcoin.conf. This will authorize Unify to communicate with your node.")
                     .foregroundStyle(.secondary)
+                
+                Text("It is strongly recommended to use an onion address for your RPC address! Connect Tor and onion's will work. The only acception should be 127.0.0.1 which is your local computer or a LAN address.")
+                    .foregroundStyle(.secondary)
+            }
+            
+            Section("Tor") {
+                if torProgress < 100.0 && torEnabled {
+                    ProgressView("Bootstrapping \(Int(torProgress))% complete…", value: torProgress, total: 100)
+                }
+                
+                Toggle("Connect", isOn: $torEnabled)
+                    .onChange(of: torEnabled) {
+                        if torEnabled && torManager.state != .connected {
+                            torManager.start()
+                        }
+                        
+                        if !torEnabled {
+                            torManager.resign()
+                            torConnected = false
+                        }
+                        
+                        UserDefaults.standard.setValue(torEnabled, forKey: "torEnabled")
+                    }
+                    .onAppear {
+                        torManager.showProgress = { progress in
+                            torProgress = Double(progress)
+                        }
+                        
+                        torManager.torConnected = { connected in
+                            torConnected = connected
+                        }
+                    }
+                
+                HStack(spacing: 0) {
+                    Label("Status", systemImage: "server.rack")
+                        //.frame(maxWidth: 200, alignment: .leading)
+                    
+                    Spacer()
+                    
+                    if torConnected {
+                        Label {
+                            Text("Connected")
+                        } icon: {
+                            Image(systemName: "circle.fill")
+                                .foregroundColor(.green)
+                        }
+                    } else {
+                        Label {
+                            Text("Disconnected")
+                        } icon: {
+                            Image(systemName: "circle.fill")
+                                .foregroundColor(.red)
+                        }
+                    }
+                }
+                
+                if torEnabled {
+                    HStack() {
+                        Label("Privkey", systemImage: "ellipsis.rectangle.fill")
+                            .frame(maxWidth: 200, alignment: .leading)
+                        
+                        Spacer()
+                        
+                        SecureField("", text: $encryptedTorAuthKey)
+                        
+                        Button {
+                            print("update tor auth")
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
+                    
+                    HStack() {
+                        Label("Pubkey", systemImage: "key")
+                            .frame(maxWidth: 200, alignment: .leading)
+                        
+                        Spacer()
+                        
+                        CopyView(item: "descriptor:x25519:" + torAuthPubkey)
+                    }
+                }
             }
             
             if bitcoinCoreConnected {
@@ -241,7 +350,7 @@ struct ConfigView: View {
                         SecureField("", text: $encSigner)
                         
                         Button {
-                            DataManager.deleteAllData(entityName: "Signers") { deleted in
+                            DataManager.deleteAllData(entityName: "Bip39Signer") { deleted in
                                 if deleted {
                                     self.encSigner = ""
                                 }
@@ -342,7 +451,7 @@ struct ConfigView: View {
             return
         }
         
-        DataManager.saveEntity(entityName: "Signers", dict: ["encryptedData": encryptedSigner]) { saved in
+        DataManager.saveEntity(entityName: "BIP39Signer", dict: ["encryptedData": encryptedSigner]) { saved in
             guard saved else {
                 creatingWallet = false
                 showError(desc: "Unable to save encrypted seed words.")
@@ -388,15 +497,26 @@ struct ConfigView: View {
         rpcWallets.removeAll()
         rpcWallet = ""
         
-        DataManager.retrieve(entityName: "Signers") { signer in
+        torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false
+        
+        DataManager.retrieve(entityName: "TorCredentials") { torCredDict in
+            guard let torCredDict = torCredDict else { return }
+            
+            let torCreds = TorCreds(dictionary: torCredDict)
+            encryptedTorAuthKey = torCreds.encryptedPrivateKey.hex
+            torAuthPubkey = torCreds.publicKey
+        }
+        
+        DataManager.retrieve(entityName: "BIP39Signer") { signer in
             guard let signer = signer, let encSignerData = signer["encryptedData"] as? Data else {
+                
                 return
             }
             
             encSigner = encSignerData.hex
         }
         
-        DataManager.retrieve(entityName: "Credentials", completion: { credentials in
+        DataManager.retrieve(entityName: "RPCCredentials", completion: { credentials in
             guard let credentials = credentials else {
                 showError(desc: "No credentials saved, something is not right.")
                 
@@ -420,6 +540,8 @@ struct ConfigView: View {
                 
                 return
             }
+            
+            rpcAddress = credentials["rpcAddress"] as? String ?? "127.0.0.1"
             
             chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
             
@@ -451,14 +573,14 @@ struct ConfigView: View {
             BitcoinCoreRPC.shared.btcRPC(method: .listwallets) { (response, errorDesc) in
                 guard errorDesc == nil else {
                     bitcoinCoreError = errorDesc!
-                    showError(desc: errorDesc!)
+                    //showError(desc: errorDesc!)
                     
                     return
                 }
                 
                 guard let wallets = response as? [String] else {
                     bitcoinCoreError = BitcoinCoreError.noWallets.localizedDescription
-                    showError(desc: BitcoinCoreError.noWallets.localizedDescription)
+                    //showError(desc: BitcoinCoreError.noWallets.localizedDescription)
                     
                     return
                 }
@@ -468,7 +590,7 @@ struct ConfigView: View {
                 
                 guard wallets.count > 0 else {
                     bitcoinCoreError = "No wallets exist yet..."
-                    showError(desc: bitcoinCoreError)
+                    //showError(desc: bitcoinCoreError)
                     
                     return
                 }
@@ -480,7 +602,7 @@ struct ConfigView: View {
     
     
     private func updateRpcUser(rpcUser: String) {
-        DataManager.update(entityName: "Credentials", keyToUpdate: "rpcUser", newValue: rpcUser) { updated in
+        DataManager.update(keyToUpdate: "rpcUser", newValue: rpcUser, entity: "RPCCredentials") { updated in
             if updated {
                 self.rpcUser = rpcUser
                 updateRpcAuth()
@@ -504,7 +626,7 @@ struct ConfigView: View {
             return
         }
         
-        DataManager.update(entityName: "Credentials", keyToUpdate: "rpcPass", newValue: encryptedRpcPass) { updated in
+        DataManager.update(keyToUpdate: "rpcPass", newValue: encryptedRpcPass, entity: "RPCCredentials") { updated in
             if updated {
                 self.rpcPassword = rpcPass
                 updateRpcAuth()

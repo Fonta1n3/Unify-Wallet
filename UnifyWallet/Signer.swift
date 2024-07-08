@@ -170,38 +170,33 @@ class Signer {
         /// Fetch wallets on the same network
         func getSeeds() {
             seedsToSignWith.removeAll()
-            DataManager.retrieveSigners() { signers in
-                guard let signers = signers else {
+            DataManager.retrieve(entityName: "BIP39Signer") { signer in
+                guard let signer = signer else {
                     print("no signer")
                     return
                 }
                 
-                for signer in signers {
-                    
-                    guard let encryptedSigner = signer["encryptedData"] as? Data else {
-                        print("no encryptedSigner")
-                        return
-                    }
-                    
-                    
-                    if var seed = Crypto.decrypt(encryptedSigner) {
-                        if var words = String(data: seed, encoding: .utf8) {
-                            seed = Data()
-                            
-                            if var masterKey = masterKey(words: words, chain: chain, passphrase: passphrase ?? "") {
-                                words = ""
-                                if var hdkey = try? HDKey(base58: masterKey) {
-                                    masterKey = ""
-                                    xprvToSignWith = hdkey
-                                    hdkey = try! HDKey(base58: "xpub6FETvV487Sr4VSV9Ya5em5ZAug4dtnFwgnMG7TFAfkJDHoQ1uohXft49cFenfpJHbPueMnfyxtBoAuvSu7XNL9bbLzcM1QJCPwtofqv3dqC")
-                                    processWithActiveWallet()
-                                    break
-                                }
+                guard let encryptedSigner = signer["encryptedData"] as? Data else {
+                    print("no encryptedSigner")
+                    return
+                }
+                
+                if var seed = Crypto.decrypt(encryptedSigner) {
+                    if var words = String(data: seed, encoding: .utf8) {
+                        seed = Data()
+                        
+                        if var masterKey = masterKey(words: words, chain: chain, passphrase: passphrase ?? "") {
+                            words = ""
+                            if var hdkey = try? HDKey(base58: masterKey) {
+                                masterKey = ""
+                                xprvToSignWith = hdkey
+                                hdkey = try! HDKey(base58: "xpub6FETvV487Sr4VSV9Ya5em5ZAug4dtnFwgnMG7TFAfkJDHoQ1uohXft49cFenfpJHbPueMnfyxtBoAuvSu7XNL9bbLzcM1QJCPwtofqv3dqC")
+                                processWithActiveWallet()
                             }
                         }
-                    } else {
-                        print("decrypting signer failed")
                     }
+                } else {
+                    print("decrypting signer failed")
                 }
             }
         }

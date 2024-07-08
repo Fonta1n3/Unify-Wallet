@@ -23,12 +23,12 @@ struct SendView: View, DirectMessageEncrypting {
     var body: some View {
         Form() {
             if !invoiceUploaded {
-                Section("Invoice") {
+                Section("Add Invoice") {
                     UploadInvoiceView(uploadedInvoice: $uploadedInvoice, invoiceUploaded: $invoiceUploaded)
                 }
                 
             } else {
-                Section("Invoice") {
+                Section("Pay Invoice") {
                     if let uploadedInvoice = uploadedInvoice {
                         Label("\(uploadedInvoice.address!)", systemImage: "arrow.up.forward.circle")
                         

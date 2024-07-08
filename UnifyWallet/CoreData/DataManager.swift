@@ -9,10 +9,10 @@ import CoreData
 import Foundation
 
 /// Main data manager to handle the todo items
-class DataManager: NSObject, ObservableObject {
+class DataManager: NSObject {
     static let shared = DataManager()
     /// Dynamic properties that the UI will react to
-    @Published var credentials: [Credentials] = [Credentials]()
+    //@Published var credentials: [RPCCredentials] = [RPCCredentials]()
     
     /// Add the Core Data container with the model name
     let container: NSPersistentContainer = NSPersistentContainer(name: "UnifyWallet")
@@ -24,6 +24,7 @@ class DataManager: NSObject, ObservableObject {
     }
     
     class func retrieve(entityName: String, completion: @escaping (([String:Any]?)) -> Void) {
+        print("retrieve: \(entityName)")
         let context = DataManager.shared.container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fetchRequest.returnsObjectsAsFaults = false
@@ -41,23 +42,23 @@ class DataManager: NSObject, ObservableObject {
         }
     }
     
-    class func retrieveSigners(completion: @escaping (([[String:Any]]?)) -> Void) {
-        let context = DataManager.shared.container.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Signers")
-        fetchRequest.returnsObjectsAsFaults = false
-        fetchRequest.resultType = .dictionaryResultType
-        
-        do {
-            if let results = try context.fetch(fetchRequest) as? [[String:Any]], results.count > 0 {
-                completion(results)
-            } else {
-                completion(nil)
-            }
-            
-        } catch {
-            completion(nil)
-        }
-    }
+//    class func retrieveSigners(completion: @escaping (([String:Any]?)) -> Void) {
+//        let context = DataManager.shared.container.viewContext
+//        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Signers")
+//        fetchRequest.returnsObjectsAsFaults = false
+//        fetchRequest.resultType = .dictionaryResultType
+//        
+//        do {
+//            if let results = try context.fetch(fetchRequest) as? [[String:Any]], results.count > 0 {
+//                completion(results[0])
+//            } else {
+//                completion(nil)
+//            }
+//            
+//        } catch {
+//            completion(nil)
+//        }
+//    }
     
     class func deleteAllData(entityName: String, completion: @escaping ((Bool)) -> Void) {
         let context = DataManager.shared.container.viewContext
@@ -65,7 +66,7 @@ class DataManager: NSObject, ObservableObject {
         fetchRequest.returnsObjectsAsFaults = false
         
         do {
-            let stuff = try context.fetch(fetchRequest)
+            let stuff = try? context.fetch(fetchRequest)
             
             for thing in stuff as! [NSManagedObject] {
                 context.delete(thing)
@@ -105,22 +106,21 @@ class DataManager: NSObject, ObservableObject {
         completion(success)
     }
     
-    class func update(entityName: String, keyToUpdate: String, newValue: Any, completion: @escaping ((Bool)) -> Void) {
+    class func update(keyToUpdate: String, newValue: Any, entity: String, completion: @escaping ((Bool)) -> Void) {
         let context = DataManager.shared.container.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: entity)
         fetchRequest.returnsObjectsAsFaults = false
         
-        do {
-            let credentials = try context.fetch(fetchRequest)
-            let credential = credentials[0] as! NSManagedObject
-            credential.setValue(newValue, forKey: keyToUpdate)
-            
-            try context.save()
-            
-            completion(true)
-            
-        } catch {
-            completion(false)
+        guard let results = try? context.fetch(fetchRequest), results.count > 0 else { completion(false); return }
+        
+        for data in results {
+            data.setValue(newValue, forKey: keyToUpdate)
+            do {
+                try context.save()
+                completion(true)
+            } catch {
+                completion(false)
+            }
         }
     }
 }

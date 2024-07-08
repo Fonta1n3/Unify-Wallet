@@ -26,6 +26,9 @@ struct HomeView: View {
             NavigationStack(path: $receiveNavigator.path) {
                 ReceiveView()
                     .navigationDestination(for: ReceiveNavigationLinkValues.self, destination: { $0 })
+                    #if os(iOS)
+                    .navigationTitle("Receive")
+                    #endif
             }
             .environmentObject(receiveNavigator)
             .tag(Tabs.receive)
@@ -41,6 +44,9 @@ struct HomeView: View {
             NavigationStack(path: $sendNavigator.path) {
                 SendView()
                     .navigationDestination(for: SendNavigationLinkValues.self, destination: { $0 })
+                    #if os(iOS)
+                    .navigationTitle("Send")
+                    #endif
             }
             .environmentObject(sendNavigator)
             .tag(Tabs.send)
@@ -56,6 +62,9 @@ struct HomeView: View {
             NavigationStack() {
                 HistoryView()
                     .navigationDestination(for: HistoryNavigationLinkValues.self, destination: { $0 })
+                    #if os(iOS)
+                    .navigationTitle("History")
+                    #endif
             }
             .tag(Tabs.history)
             .tabItem {
@@ -70,6 +79,9 @@ struct HomeView: View {
             NavigationStack {
                 ConfigView()
                     .navigationDestination(for: ConfigNavigationLinkValues.self, destination: { $0 })
+                    #if os(iOS)
+                    .navigationTitle("Config")
+                    #endif
             }
             .tag(Tabs.config)
             .tabItem {

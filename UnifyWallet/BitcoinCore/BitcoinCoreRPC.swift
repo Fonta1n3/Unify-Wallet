@@ -15,7 +15,7 @@ class BitcoinCoreRPC {
     func btcRPC(method: BTC_CLI_COMMAND, completion: @escaping ((response: Any?, errorDesc: String?)) -> Void) {
         let requestId = UUID().uuidString
         
-        DataManager.retrieve(entityName: "Credentials") { credentials in
+        DataManager.retrieve(entityName: "RPCCredentials") { credentials in
             guard let credentials = credentials, let encRpcPassData = credentials["rpcPass"] as? Data else {
                 completion((nil, "No credentials saved."))
                 return
@@ -41,17 +41,17 @@ class BitcoinCoreRPC {
                 return
             }
             
+            let rpcAddress = credentials["rpcAddress"] as? String ?? "localhost"
+            
             let walletName = UserDefaults.standard.object(forKey: "walletName") as? String
-            var walletUrl = "http://\(rpcUser):\(rpcPass)@localhost:\(rpcPort)"
+            var walletUrl = "http://\(rpcUser):\(rpcPass)@\(rpcAddress):\(rpcPort)"
             
             if !(method.stringValue == "listwallets") {
                 if let walletName = walletName {
                     walletUrl += "/wallet/" + walletName
                 }
             }
-            
-            
-            
+                        
             guard let url = URL(string: walletUrl) else {
                 completion((nil, "URL error."))
                 return
@@ -95,7 +95,12 @@ class BitcoinCoreRPC {
             print("url = \(url)")
             print("request: \(dict)")
             #endif
-            let session = URLSession(configuration: .default)
+            var session = URLSession(configuration: .default)
+            
+            if rpcAddress.hasSuffix(".onion") {
+                session = TorClient.sharedInstance.session
+            }
+            
             let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
                 guard let urlContent = data else {
                     guard let error = error else {
