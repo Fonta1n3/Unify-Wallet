@@ -296,34 +296,50 @@ class TorClient: NSObject, URLSessionDelegate {
         DataManager.retrieve(entityName: "TorCredentials") { dict in
             guard let dict = dict else { completion(); return }
             
-            let torCreds = TorCreds(dictionary: dict)
-            
-            guard let encryptedPrivateKey = Crypto.decrypt(torCreds.encryptedPrivateKey) else { completion(); return }
-            
-            guard let decryptedPrivateKey = Crypto.decrypt(encryptedPrivateKey) else { completion(); return }
-            
-            guard let authKey = String(data: decryptedPrivateKey, encoding: .utf8) else { completion(); return }
-            
-            guard let encryptedOnionAddress = torCreds.encryptedOnionAddress else { completion(); return }
-            
-            guard let onionAddressData = Crypto.decrypt(encryptedOnionAddress) else { completion(); return }
-            
-            guard let onionAddress = String(data: onionAddressData, encoding: .utf8) else { completion(); return }
-            
-            let onionAddressArray = onionAddress.components(separatedBy: ".onion:")
-            // Ensure we are actually V3 before adding auth
-            guard onionAddressArray[0].count > 55 else { completion(); return }
-            
-            let authString = onionAddressArray[0] + ":descriptor:x25519:" + authKey
-            let suffix = "UnifyWallet.auth_private"
-            
-            let file = URL(fileURLWithPath: self.authDirPath, isDirectory: true).appendingPathComponent(suffix)
-            
-            try? authString.write(to: file, atomically: true, encoding: .utf8)
-            
-            try? (file as NSURL).setResourceValue(URLFileProtection.complete, forKey: .fileProtectionKey)
-            
-            completion()
+            DataManager.retrieve(entityName: "RPCCredentials") { rpcCredsDict in
+                guard let rpcCredsDict = rpcCredsDict else {
+                    completion()
+                    
+                    return
+                }
+                
+                guard let rpcAddress = rpcCredsDict["rpcAddress"] as? String else {
+                    completion()
+                    
+                    return
+                }
+                
+                guard rpcAddress.hasSuffix(".onion") else {
+                    completion()
+                    
+                    return
+                }
+                
+                let torCreds = TorCreds(dictionary: dict)
+                
+                guard let decryptedPrivateKey = Crypto.decrypt(torCreds.encryptedPrivateKey) else {
+                    completion()
+                    
+                    return
+                }
+                
+                guard let authKey = String(data: decryptedPrivateKey, encoding: .utf8) else {
+                    completion()
+                    
+                    return
+                }
+                
+                let onionAddressArray = rpcAddress.components(separatedBy: ".onion")
+                // Ensure we are actually V3 before adding auth
+                guard onionAddressArray[0].count > 55 else { completion(); return }
+                let authString = onionAddressArray[0] + ":descriptor:x25519:" + authKey
+                let suffix = "UnifyWallet.auth_private"
+                let file = URL(fileURLWithPath: self.authDirPath, isDirectory: true).appendingPathComponent(suffix)
+                try? authString.write(to: file, atomically: true, encoding: .utf8)
+                try? (file as NSURL).setResourceValue(URLFileProtection.complete, forKey: .fileProtectionKey)
+                                
+                completion()
+            }
         }
     }
     

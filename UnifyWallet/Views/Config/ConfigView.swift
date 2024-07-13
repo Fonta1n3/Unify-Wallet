@@ -28,12 +28,12 @@ struct ConfigView: View {
     @State private var encSigner = ""
     @State private var bitcoinCoreConnected = false
     @State private var tint: Color = .red
-    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
+    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Regtest"
     @State private var showingPassphraseAlert = false
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
     @State private var creatingWallet = false
-    @State private var torEnabled = false
+    @State private var torEnabled = true
     @State private var torProgress = 0.0
     @State private var torConnected = false
     @State private var torDifficulties = false
@@ -174,12 +174,9 @@ struct ConfigView: View {
                         .truncationMode(.middle)
                         .lineLimit(1)
                         .multilineTextAlignment(.leading)
-                    
-                    Button {
-                        print("update rpc address")
-                    } label: {
-                        Text("Save")
-                    }
+                        .onChange(of: rpcAddress) {
+                            updateRpcAddress()
+                        }
                 }
                 
                 Text("Copy the auth text to add it to your bitcoin.conf. This will authorize Unify to communicate with your node.")
@@ -190,7 +187,7 @@ struct ConfigView: View {
             }
             
             Section("Tor") {
-                if torProgress < 100.0 && torEnabled {
+                if torEnabled && !torConnected {
                     ProgressView("Bootstrapping \(Int(torProgress))% complete…", value: torProgress, total: 100)
                 }
                 
@@ -393,6 +390,9 @@ struct ConfigView: View {
             rpcWallets.removeAll()
         }
         .onAppear {
+            if torManager.state == .connected {
+                torConnected = true
+            }
             setValues()
         }
         .alert(errorDesc, isPresented: $showError) {
@@ -542,6 +542,7 @@ struct ConfigView: View {
             }
             
             rpcAddress = credentials["rpcAddress"] as? String ?? "127.0.0.1"
+            rpcPort = credentials["rpcPort"] as? String ?? "38332"
             
             chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
             
@@ -566,8 +567,7 @@ struct ConfigView: View {
             if let walletName = UserDefaults.standard.object(forKey: "walletName") as? String {
                 rpcWallet = walletName
             }
-            
-            rpcPort = UserDefaults.standard.object(forKey: "rpcPort") as? String ?? "38332"
+                        
             nostrRelay = UserDefaults.standard.object(forKey: "nostrRelay") as? String ?? "wss://relay.damus.io"
             
             BitcoinCoreRPC.shared.btcRPC(method: .listwallets) { (response, errorDesc) in
@@ -649,7 +649,24 @@ struct ConfigView: View {
     
     
     private func updateRpcPort() {
-        UserDefaults.standard.setValue(rpcPort, forKey: "rpcPort")
+        DataManager.update(keyToUpdate: "rpcPort", newValue: rpcPort, entity: "RPCCredentials") { rpcPortUpdated in
+            guard rpcPortUpdated else {
+                showError(desc: "Unable to update RPC port.")
+                
+                return
+            }
+        }
+    }
+    
+    
+    private func updateRpcAddress() {
+        DataManager.update(keyToUpdate: "rpcAddress", newValue: rpcAddress, entity: "RPCCredentials") { rpcPortUpdated in
+            guard rpcPortUpdated else {
+                showError(desc: "Unable to update RPC address.")
+                
+                return
+            }
+        }
     }
     
     

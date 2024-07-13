@@ -127,6 +127,8 @@ struct UploadInvoiceView: View {
     @State private var isShowingScanner = false
     @State private var pickerItem: PhotosPickerItem?
     @State private var selectedImage: Image?
+    @State private var showError = false
+    @State private var errorDesc = ""
     
     @Binding var uploadedInvoice: Invoice?
     @Binding var invoiceUploaded: Bool
@@ -159,13 +161,22 @@ struct UploadInvoiceView: View {
             #endif
             
             Button {
-                uploadedInvoice = handlePaste()
-                invoiceUploaded = true
+                if let invoiceCheck = handlePaste() {
+                    uploadedInvoice = invoiceCheck
+                    invoiceUploaded = true
+                } else {
+                    errorDesc = "Not a valid Payjoin over Nostr invoice."
+                    showError = true
+                }
+                
             } label: {
                 Image(systemName: "doc.on.clipboard")
             }
         }
         .buttonStyle(.bordered)
+        .alert(errorDesc, isPresented: $showError) {
+            Button("OK", role: .cancel) {}
+        }
         
         Text("Select a method to upload an invoice.")
             .foregroundStyle(.tertiary)

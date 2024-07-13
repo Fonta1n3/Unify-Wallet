@@ -72,7 +72,9 @@ struct UnifyWalletApp: App {
                 
                 let dict: [String:Any] = [
                     "rpcPass": encRpcPass,
-                    "rpcUser": "Unify"
+                    "rpcUser": "Unify",
+                    "rpcAddress": "127.0.0.1",
+                    "rpcPort": "38332"
                 ]
                 
                 saveCreds(entityName: "RPCCredentials", dict: dict)

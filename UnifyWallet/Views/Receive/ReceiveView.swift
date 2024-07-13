@@ -15,10 +15,17 @@ struct ReceiveView: View {
     @State private var utxos: [Utxo] = []
     @State private var showError = false
     @State private var errDesc = ""
+    @State private var torProgress = 0.0
+    @State private var torEnabled = false
+    @State private var showSpinner = false
     
     
     var body: some View {
         Form() {
+            if torProgress < 100.0 && torEnabled {
+                ProgressView("Tor bootstrapping \(Int(torProgress))% complete…", value: torProgress, total: 100)
+            }
+            
             Section("Create Invoice") {
                 HStack() {
                     Label("Invoice amount", systemImage: "bitcoinsign.circle")
@@ -43,6 +50,11 @@ struct ReceiveView: View {
                         .keyboardType(.default)
                         #endif
                         .autocorrectionDisabled()
+                    
+                    if showSpinner {
+                        ProgressView()
+                            .scaleEffect(0.5)
+                    }
                 }
             }
             
@@ -80,14 +92,37 @@ struct ReceiveView: View {
             amount = ""
             address = ""
             DataManager.retrieve(entityName: "RPCCredentials") { creds in
-                guard let _ = creds else {
+                guard let creds = creds else {
                     errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
                     showError = true
                     return
                 }
                 
-                fetchAddress()
-                getUtxos()
+                guard let address = creds["rpcAddress"] as? String else { return }
+                
+                if address.hasSuffix(".onion") {
+                    torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false
+                    if torEnabled && TorClient.sharedInstance.state != .connected && TorClient.sharedInstance.state != .started {
+                        TorClient.sharedInstance.start()
+                    } else {
+                        fetchAddress()
+                        getUtxos()
+                    }
+                } else {
+                    fetchAddress()
+                    getUtxos()
+                }
+            }
+            
+            TorClient.sharedInstance.showProgress = { progress in
+                torProgress = Double(progress)
+            }
+            
+            TorClient.sharedInstance.torConnected = { connected in
+                if connected {
+                    fetchAddress()
+                    getUtxos()
+                }
             }
         }
         .alert(errDesc, isPresented: $showError) {
@@ -103,12 +138,13 @@ struct ReceiveView: View {
     
     
     private func fetchAddress() {
+        showSpinner = true
         let p = Get_New_Address(["address_type": "bech32"])
         
         BitcoinCoreRPC.shared.btcRPC(method: .getnewaddress(param: p)) { (response, errorDesc) in
             guard let address = response as? String else {
                 displayError(desc: errorDesc ?? "Unknown error from getnewaddress.")
-                
+                showSpinner = false
                 return
             }
             
@@ -124,13 +160,13 @@ struct ReceiveView: View {
         BitcoinCoreRPC.shared.btcRPC(method: .listunspent(p)) { (response, errorDesc) in
             guard let response = response as? [[String: Any]] else {
                 displayError(desc: errorDesc ?? "Unknown error from listunspent.")
-                
+                showSpinner = false
                 return
             }
             
             guard response.count > 0 else {
                 displayError(desc: "No utxo's.")
-                
+                showSpinner = false
                 return
             }
             
@@ -142,6 +178,8 @@ struct ReceiveView: View {
                     utxos.append(utxo)
                 }
             }
+            
+            showSpinner = false
             
             if utxos.count == 0 {
                 displayError(desc: "No spendable utxo's.")

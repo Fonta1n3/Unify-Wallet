@@ -168,6 +168,8 @@
 		0A2C41BC2C3B4F1400D7EE9D /* KeyGen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyGen.swift; sourceTree = "<group>"; };
 		0A2C41BD2C3B4F1400D7EE9D /* shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
 		0A2C41BE2C3B4F1400D7EE9D /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		0A5FAE072C41582300274B9B /* UnifyWalletmacOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "UnifyWalletmacOS-Info.plist"; sourceTree = "<group>"; };
+		0A5FAE082C415FBC00274B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		0A8329C82C29F00F00F25C46 /* UnifyWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnifyWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A8329CB2C29F00F00F25C46 /* UnifyWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifyWalletApp.swift; sourceTree = "<group>"; };
 		0A8329D02C29F00F00F25C46 /* UnifyWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UnifyWallet.xcdatamodel; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 		0A8329BF2C29F00F00F25C46 = {
 			isa = PBXGroup;
 			children = (
+				0A5FAE072C41582300274B9B /* UnifyWalletmacOS-Info.plist */,
 				0A8329CA2C29F00F00F25C46 /* UnifyWallet */,
 				0A8329C92C29F00F00F25C46 /* Products */,
 				C7EF38AFCE0F7DC024C5A76C /* Pods */,
@@ -290,6 +293,7 @@
 		0A8329CA2C29F00F00F25C46 /* UnifyWallet */ = {
 			isa = PBXGroup;
 			children = (
+				0A5FAE082C415FBC00274B9B /* Info.plist */,
 				0A2C41BF2C3B4F1400D7EE9D /* Base32 */,
 				0A832A022C29F21400F25C46 /* BitcoinCore */,
 				0A8329F72C29F21400F25C46 /* CodeScanner */,
@@ -927,6 +931,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UnifyWallet/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -972,6 +977,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UnifyWallet/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1016,6 +1022,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "UnifyWalletmacOS-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -1060,6 +1067,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "UnifyWalletmacOS-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
