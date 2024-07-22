@@ -19,14 +19,14 @@ enum SendNavigationLinkValues: Hashable, View {
     
     case signedProposalView(signedRawTx: String, 
                             invoice: Invoice,
-                            ourNostrPrivKey: String,
-                            recipientsPubkey: String,
+                            ourNostrPrivKey: String?,
+                            recipientsPubkey: String?,
                             psbtProposalString: String)
     
     case broadcastView(hexstring: String,
                        invoice: Invoice,
-                       ourNostrPrivateKey: String,
-                       recipientsPubkey: String)
+                       ourNostrPrivateKey: String?,
+                       recipientsPubkey: String?)
     
     
     

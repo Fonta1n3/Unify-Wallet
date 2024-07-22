@@ -63,7 +63,7 @@ struct ReceiveAddOutputView: View {
                 Text("Additional Output")
                 
             } footer: {
-                Text("Adding an output to the transaction is what makes this a Pajoin transaction. This should be a payment to another entity or a consolidation. This output will not be shown in the invoice.")
+                Text("Adding an output to the transaction is what makes this a Payjoin transaction. This should be a payment to another entity, a consolidation, donation etc... This output will not be shown in the invoice.")
                     .foregroundStyle(.secondary)
             }
             

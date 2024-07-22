@@ -28,18 +28,19 @@ struct ConfigView: View {
     @State private var encSigner = ""
     @State private var bitcoinCoreConnected = false
     @State private var tint: Color = .red
-    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Regtest"
+    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
     @State private var showingPassphraseAlert = false
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
     @State private var creatingWallet = false
-    @State private var torEnabled = true
+    @State private var torEnabled = false
     @State private var torProgress = 0.0
     @State private var torConnected = false
     @State private var torDifficulties = false
     @State private var encryptedTorAuthKey = ""
     @State private var torAuthPubkey = ""
     @State private var rpcAddress = "127.0.0.1"
+    @State private var fetching = false
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
     
@@ -52,21 +53,36 @@ struct ConfigView: View {
                     
                     Spacer()
                     
-                    Image(systemName: "circle.fill")
-                        .foregroundColor(tint)
-                    
-                    if bitcoinCoreConnected {
-                        Text("Connected")
+                    if fetching {
+                        Image(systemName: "circle.fill")
+                            .foregroundColor(.orange)
+                        
+                        Text("Connecting...")
                             .foregroundStyle(.secondary)
+                        
+                        ProgressView()
+                            .padding(.leading)
+                        #if os(macOS)
+                            .scaleEffect(0.5)
+                        #endif
+                        
                     } else {
-                        Text("Disconnected")
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Button {
-                        setValues()
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
+                        Image(systemName: "circle.fill")
+                            .foregroundColor(tint)
+                        
+                        if bitcoinCoreConnected {
+                            Text("Connected")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("Disconnected")
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Button {
+                            setValues()
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
                     }
                 }
                 
@@ -156,8 +172,12 @@ struct ConfigView: View {
                     Spacer()
                     
                     TextField("", text: $rpcPort)
-                        .onChange(of: rpcPort) {
+//                        .onChange(of: rpcPort) {
+//                            updateRpcPort()
+//                        }
+                        .onSubmit {
                             updateRpcPort()
+                            setValues()
                         }
 #if os(iOS)
                         .keyboardType(.numberPad)
@@ -200,6 +220,7 @@ struct ConfigView: View {
                         if !torEnabled {
                             torManager.resign()
                             torConnected = false
+                            torProgress = 0.0
                         }
                         
                         UserDefaults.standard.setValue(torEnabled, forKey: "torEnabled")
@@ -237,7 +258,9 @@ struct ConfigView: View {
                     }
                 }
                 
-                if torEnabled {
+                //if torEnabled {
+                    // Toggle("Add Auth", isOn: $)
+                    // check if tor is running, if it is prompt user to quit tor then try again.
                     HStack() {
                         Label("Privkey", systemImage: "ellipsis.rectangle.fill")
                             .frame(maxWidth: 200, alignment: .leading)
@@ -247,7 +270,7 @@ struct ConfigView: View {
                         SecureField("", text: $encryptedTorAuthKey)
                         
                         Button {
-                            print("update tor auth")
+                            updateTorPrivkey()
                         } label: {
                             Image(systemName: "arrow.clockwise")
                         }
@@ -261,7 +284,7 @@ struct ConfigView: View {
                         
                         CopyView(item: "descriptor:x25519:" + torAuthPubkey)
                     }
-                }
+                //}
             }
             
             if bitcoinCoreConnected {
@@ -347,11 +370,16 @@ struct ConfigView: View {
                         SecureField("", text: $encSigner)
                         
                         Button {
-                            DataManager.deleteAllData(entityName: "Bip39Signer") { deleted in
-                                if deleted {
-                                    self.encSigner = ""
+                            DataManager.retrieve(entityName: "BIP39Signer") { bip39Signer in
+                                guard let bip39Signer = bip39Signer else { return }
+                                
+                                DataManager.deleteAllData(entityName: "BIP39Signer") { deleted in
+                                    if deleted {
+                                        self.encSigner = ""
+                                    }
                                 }
                             }
+                            
                         } label: {
                             Image(systemName: "trash")
                                 .foregroundStyle(.red)
@@ -494,10 +522,11 @@ struct ConfigView: View {
     
     
     private func setValues() {
+        fetching = true
         rpcWallets.removeAll()
         rpcWallet = ""
         
-        torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false
+        //torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false
         
         DataManager.retrieve(entityName: "TorCredentials") { torCredDict in
             guard let torCredDict = torCredDict else { return }
@@ -541,6 +570,10 @@ struct ConfigView: View {
                 return
             }
             
+            if let rpcAddress = credentials["rpcAddress"] as? String {
+                torEnabled = rpcAddress.hasSuffix(".onion")
+            }
+            
             rpcAddress = credentials["rpcAddress"] as? String ?? "127.0.0.1"
             rpcPort = credentials["rpcPort"] as? String ?? "38332"
             
@@ -570,7 +603,11 @@ struct ConfigView: View {
                         
             nostrRelay = UserDefaults.standard.object(forKey: "nostrRelay") as? String ?? "wss://relay.damus.io"
             
+            fetching = true
+            
             BitcoinCoreRPC.shared.btcRPC(method: .listwallets) { (response, errorDesc) in
+                fetching = false
+                
                 guard errorDesc == nil else {
                     bitcoinCoreError = errorDesc!
                     //showError(desc: errorDesc!)
@@ -655,16 +692,51 @@ struct ConfigView: View {
                 
                 return
             }
+            setValues()
         }
     }
     
     
+    private func updateTorPrivkey() {
+        KeyGen().generate { (pubkey, privkey) in
+            guard let encrypted = Crypto.encrypt(privkey.dataUsingUTF8StringEncoding) else { return }
+            DataManager.update(keyToUpdate: "encryptedPrivateKey", newValue: encrypted, entity: "TORCredentials") { encryptedPrivateKeyUpdated in
+                guard encryptedPrivateKeyUpdated else {
+                    showError(desc: "Unable to update encryptedPrivateKey.")
+                    
+                    return
+                }
+                //setValues()
+                DataManager.update(keyToUpdate: "publicKey", newValue: pubkey, entity: "TORCredentials") { publicKeyUpdated in
+                    guard publicKeyUpdated else {
+                        showError(desc: "Unable to update publicKey.")
+                        
+                        return
+                    }
+                    setValues()
+                }
+            }
+        }
+        
+    }
+    
+    
     private func updateRpcAddress() {
-        DataManager.update(keyToUpdate: "rpcAddress", newValue: rpcAddress, entity: "RPCCredentials") { rpcPortUpdated in
-            guard rpcPortUpdated else {
+        DataManager.update(keyToUpdate: "rpcAddress", newValue: rpcAddress, entity: "RPCCredentials") { rpcAddressUpdated in
+            guard rpcAddressUpdated else {
                 showError(desc: "Unable to update RPC address.")
                 
                 return
+            }
+            
+            if rpcAddress.hasSuffix(".onion") {
+                torEnabled = true
+            } else {
+                torEnabled = false
+                torManager.resign()
+                torConnected = false
+                torProgress = 0.0
+                
             }
         }
     }
@@ -699,7 +771,7 @@ struct ConfigView: View {
         
         let dict: [String: Any] = ["encryptedData": encSeed]
         
-        DataManager.saveEntity(entityName: "Signers", dict: dict) { saved in
+        DataManager.saveEntity(entityName: "BIP39Signer", dict: dict) { saved in
             guard saved else {
                 showError(desc: "Unable to save the encrypted signer.")
                 

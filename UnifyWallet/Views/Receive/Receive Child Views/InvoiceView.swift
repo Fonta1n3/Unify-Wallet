@@ -44,56 +44,112 @@ struct InvoiceView: View, DirectMessageEncrypting {
                 if let ourKeypair = ourKeypair {
                     let url = "bitcoin:\(invoiceAddress)?amount=\(invoiceAmount)&pj=nostr:\(ourKeypair.publicKey.npub)"
                     
-                    Section("Payjoin Invoice") {
-                        Label("Payjoin over Nostr Invoice", systemImage: "qrcode")
+                    if outputAddress == nil && outputAmount == nil {
+                        let standardInvoice = "bitcoin:\(invoiceAddress)?amount=\(invoiceAmount)"
                         
-                        QRView(url: url)
-                        
-                        HStack {
-                            Text(url)
-                                .truncationMode(.middle)
-                                .lineLimit(1)
+                        Section("Standard Invoice") {
+                            Label("Standard BIP21 Invoice", systemImage: "qrcode")
                             
-                            Button {
-                                #if os(macOS)
-                                NSPasteboard.general.clearContents()
-                                NSPasteboard.general.setString(url, forType: .string)
-                                #elseif os(iOS)
-                                UIPasteboard.general.string = url
-                                #endif
-                                showCopiedAlert = true
+                            QRView(url: standardInvoice)
+                            
+                            HStack {
+                                Text(standardInvoice)
+                                    .truncationMode(.middle)
+                                    .lineLimit(1)
                                 
-                            } label: {
-                                Image(systemName: "doc.on.doc")
-                            }
-                        }
-                        
-                        HStack() {
-                            Label {
-                                Text("Invoice Address")
-                                    .foregroundStyle(.secondary)
-                            } icon: {
-                                Image(systemName: "arrow.down.forward.circle")
-                                    .foregroundStyle(.blue)
-                            }
-                            
-                            Text(invoiceAddress)
-                        }
-                        
-                        HStack() {
-                            Label {
-                                Text("Invoice Amount")
-                                    .foregroundStyle(.secondary)
-                            } icon: {
-                                Image(systemName: "bitcoinsign.circle")
-                                    .foregroundStyle(.blue)
+                                Button {
+                                    #if os(macOS)
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(standardInvoice, forType: .string)
+                                    #elseif os(iOS)
+                                    UIPasteboard.general.string = standardInvoice
+                                    #endif
+                                    showCopiedAlert = true
+                                    
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                }
                             }
                             
-                            Text(invoiceAmount.btcBalanceWithSpaces)
+                            HStack() {
+                                Label {
+                                    Text("Invoice Address")
+                                        .foregroundStyle(.secondary)
+                                } icon: {
+                                    Image(systemName: "arrow.down.forward.circle")
+                                        .foregroundStyle(.blue)
+                                }
+                                
+                                Text(invoiceAddress)
+                            }
+                            
+                            HStack() {
+                                Label {
+                                    Text("Invoice Amount")
+                                        .foregroundStyle(.secondary)
+                                } icon: {
+                                    Image(systemName: "bitcoinsign.circle")
+                                        .foregroundStyle(.blue)
+                                }
+                                
+                                Text(invoiceAmount.btcBalanceWithSpaces)
+                            }
+                            
+                            Text("Share this invoice with the payee.")
+                                .foregroundStyle(.secondary)
                         }
-                        
-                        Text("Share this invoice with the payee, they will send us the original psbt which we may broadcast as is or optionally create a Payjoin proposal.")
-                            .foregroundStyle(.secondary)
+                    } else {
+                        Section("Payjoin Invoice") {
+                            Label("Payjoin over Nostr Invoice", systemImage: "qrcode")
+                            
+                            QRView(url: url)
+                            
+                            HStack {
+                                Text(url)
+                                    .truncationMode(.middle)
+                                    .lineLimit(1)
+                                
+                                Button {
+                                    #if os(macOS)
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(url, forType: .string)
+                                    #elseif os(iOS)
+                                    UIPasteboard.general.string = url
+                                    #endif
+                                    showCopiedAlert = true
+                                    
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                }
+                            }
+                            
+                            HStack() {
+                                Label {
+                                    Text("Invoice Address")
+                                        .foregroundStyle(.secondary)
+                                } icon: {
+                                    Image(systemName: "arrow.down.forward.circle")
+                                        .foregroundStyle(.blue)
+                                }
+                                
+                                Text(invoiceAddress)
+                            }
+                            
+                            HStack() {
+                                Label {
+                                    Text("Invoice Amount")
+                                        .foregroundStyle(.secondary)
+                                } icon: {
+                                    Image(systemName: "bitcoinsign.circle")
+                                        .foregroundStyle(.blue)
+                                }
+                                
+                                Text(invoiceAmount.btcBalanceWithSpaces)
+                            }
+                            
+                            Text("Share this invoice with the payee, they will send us the original psbt which we may broadcast as is or optionally create a Payjoin proposal.")
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 
@@ -357,6 +413,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
                 
                 return
             }
+            
+            print("invoiceAddress: \(invoiceAddress)")
+            // Failing for regtest address :(
             
             let invoiceAddress = try! Address(string: invoiceAddress)
             var allInputsSegwit = false

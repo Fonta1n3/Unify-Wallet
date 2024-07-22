@@ -34,8 +34,6 @@ A [BIP78 over Nostr Payjoin](https://github.com/Kukks/BTCPayServer.BIP78/tree/no
 
 
 ## Limitations
-- Does not create/import/recover a new wallet, you must use an existing BIP84 wallet via Bitcoin Core.
-- Only works with a local node (for now).
 - Native segwit inputs and outputs only.
 - Must have a BIP39 signer that can sign for your inputs. 
 - Tor is not currently used for nostr traffic, a VPN is recommended, your messages will not be identifiable as bitcoin transactions to the relay.
@@ -51,7 +49,6 @@ A [BIP78 over Nostr Payjoin](https://github.com/Kukks/BTCPayServer.BIP78/tree/no
 
 ## TODO
 - Watch-only capability, add ability to export each psbt for signing and paste back in.
-- Tor for Bitcoin Core node connection (currently `localhost` only).
 - Allow sender to add additional inputs/outputs.
 - Submit PR to BIP78 nostr addendum to include a `txid` message when either party broadcasts the transaction.
 
