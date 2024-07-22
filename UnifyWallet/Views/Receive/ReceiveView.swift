@@ -18,12 +18,25 @@ struct ReceiveView: View {
     @State private var torProgress = 0.0
     @State private var torEnabled = false
     @State private var showSpinner = false
+    @State private var balance = 0.0
     
     
     var body: some View {
         Form() {
             if torProgress < 100.0 && torEnabled {
-                ProgressView("Tor bootstrapping \(Int(torProgress))% complete…", value: torProgress, total: 100)
+                HStack() {
+                    ProgressView("Tor bootstrapping \(Int(torProgress))% complete…", value: torProgress, total: 100)
+                    
+                    ProgressView()
+                        .padding(.leading)
+                    #if os(macOS)
+                        .scaleEffect(0.5)
+                    #endif
+                }
+            }
+            
+            Section("Balance") {
+                Label(balance.btcBalanceWithSpaces, systemImage: "bitcoinsign.circle")
             }
             
             Section("Create Invoice") {
@@ -51,9 +64,21 @@ struct ReceiveView: View {
                         #endif
                         .autocorrectionDisabled()
                     
+                    if !showSpinner {
+                        Button {
+                            fetchAddress()
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
+                    
                     if showSpinner {
                         ProgressView()
+                        #if os(macOS)
                             .scaleEffect(0.5)
+                        #else
+                            .padding(.leading)
+                        #endif
                     }
                 }
             }
@@ -91,14 +116,22 @@ struct ReceiveView: View {
         .onAppear {
             amount = ""
             address = ""
+            if TorClient.sharedInstance.state == .connected {
+                torProgress = 100.0
+            }
             DataManager.retrieve(entityName: "RPCCredentials") { creds in
                 guard let creds = creds else {
-                    errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
-                    showError = true
+                    //errDesc = "Looks like you are new here, go to Config to add the rpcauth to your bitcoin.conf and select a wallet."
+                    //showError = true
                     return
                 }
                 
                 guard let address = creds["rpcAddress"] as? String else { return }
+                
+                if address.hasPrefix("rarokrtgsiwy42pcgmrp2sds") {
+                    errDesc = "You are using Unify in demo mode! This is a great way to test the app, navigate to Config and add your own credentials to get out of demo mode."
+                    showError = true
+                }
                 
                 if address.hasSuffix(".onion") {
                     torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false
@@ -149,6 +182,7 @@ struct ReceiveView: View {
             }
             
             self.address = address
+            self.showSpinner = false
         }
     }
     
@@ -160,13 +194,14 @@ struct ReceiveView: View {
         BitcoinCoreRPC.shared.btcRPC(method: .listunspent(p)) { (response, errorDesc) in
             guard let response = response as? [[String: Any]] else {
                 displayError(desc: errorDesc ?? "Unknown error from listunspent.")
-                showSpinner = false
+                //showSpinner = false
                 return
             }
             
             guard response.count > 0 else {
                 displayError(desc: "No utxo's.")
-                showSpinner = false
+                //showSpinner = false
+                balance = 0.0
                 return
             }
             
@@ -176,10 +211,11 @@ struct ReceiveView: View {
                 if let confs = utxo.confs, confs > 0,
                    let solvable = utxo.solvable, solvable {
                     utxos.append(utxo)
+                    balance += utxo.amount!
                 }
             }
             
-            showSpinner = false
+            //showSpinner = false
             
             if utxos.count == 0 {
                 displayError(desc: "No spendable utxo's.")

@@ -57,10 +57,8 @@ class TorClient: NSObject, URLSessionDelegate {
         state = .started
         
         var proxyPort = 19786
-        //var dnsPort = 19946
         #if targetEnvironment(simulator)
         proxyPort = 19058
-        dnsPort = 12349
         #endif
         
         sessionConfiguration.connectionProxyDictionary = [kCFProxyTypeKey: kCFProxyTypeSOCKS,
@@ -96,7 +94,7 @@ class TorClient: NSObject, URLSessionDelegate {
                     "LearnCircuitBuildTimeout": "1",
                     "NumEntryGuards": "8",
                     "SafeSocks": "1",
-                    "LongLivedPorts": "80,443",
+                    //"LongLivedPorts": "80,443",
                     "NumCPUs": "2",
                     "DisableDebuggerAttachment": "1",
                     "SafeLogging": "1"
@@ -146,8 +144,6 @@ class TorClient: NSObject, URLSessionDelegate {
                                 if arguments != nil {
                                     if arguments!["PROGRESS"] != nil {
                                         let progress = Int(arguments!["PROGRESS"]!)!
-                                        //weakDelegate?.torConnProgress(progress)
-                                        //self.progress = progress
                                         self.showProgress?((progress))
                                         if progress >= 100 {
                                             self.controller?.removeObserver(progressObs)
@@ -163,23 +159,16 @@ class TorClient: NSObject, URLSessionDelegate {
                                 if established {
                                     self.state = .connected
                                     self.torConnected?((true))
-                                    //self.torrConnFinished = true
-                                    //weakDelegate?.torConnFinished()
                                     self.controller?.removeObserver(observer)
                                     
                                 } else if self.state == .refreshing {
                                     self.state = .connected
                                     self.torConnected?((true))
-                                    //self.torrConnFinished = true
-                                    //weakDelegate?.torConnFinished()
                                     self.controller?.removeObserver(observer)
                                 }
                             })
                         }
                     } catch {
-                        //weakDelegate?.torConnDifficulties()
-                        //self.torrConnFinished = false
-                        //self.torConnDifficulties = true
                         self.torConnected?((false))
                         self.state = .none
                     }

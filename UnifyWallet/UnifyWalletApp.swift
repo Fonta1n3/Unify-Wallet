@@ -10,7 +10,6 @@ import SwiftUI
 
 @main
 struct UnifyWalletApp: App {
-    //@StateObject private var manager: DataManager = DataManager()
     @State private var showNotSavedAlert = false
     
     
@@ -22,8 +21,6 @@ struct UnifyWalletApp: App {
     var body: some Scene {
         WindowGroup {
             HomeView()
-                //.environmentObject(manager)
-                //.environment(\.managedObjectContext, manager.container.viewContext)
         }
     }
     
@@ -34,6 +31,9 @@ struct UnifyWalletApp: App {
 //        }
 //        DataManager.deleteAllData(entityName: "BIP39Signer") { deleted in
 //            print("deleted signers: \(deleted)")
+//        }
+//        DataManager.deleteAllData(entityName: "TorCredentials") { deleted in
+//            print("deleted tor credentials: \(deleted)")
 //        }
         
         
@@ -55,17 +55,10 @@ struct UnifyWalletApp: App {
                     return
                 }
                 
-                guard let rpcauthcreds = RPCAuth().generateCreds(username: "Unify", password: nil) else {
-                    showNotSavedAlert = true
-                    return
-                }
-                
                 UserDefaults.standard.setValue("38332", forKey: "rpcPort")
                 UserDefaults.standard.setValue("Signet", forKey: "network")
-                
-                let rpcpass = rpcauthcreds.password
-                
-                guard let encRpcPass = Crypto.encrypt(rpcpass.data(using: .utf8)!) else {
+                                
+                guard let encRpcPass = Crypto.encrypt(Crypto.privKeyData()) else {
                     showNotSavedAlert = true
                     return
                 }
@@ -78,6 +71,7 @@ struct UnifyWalletApp: App {
                 ]
                 
                 saveCreds(entityName: "RPCCredentials", dict: dict)
+                
                 createDefaultTorCreds()
                 
                 return

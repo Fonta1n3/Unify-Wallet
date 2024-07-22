@@ -22,8 +22,8 @@ struct BroadcastView: View, DirectMessageEncrypting {
     
     let hexstring: String
     let invoice: Invoice
-    let ourNostrPrivateKey: String
-    let recipientsPubkey: String
+    let ourNostrPrivateKey: String?
+    let recipientsPubkey: String?
     
     
     var body: some View {
@@ -52,23 +52,26 @@ struct BroadcastView: View, DirectMessageEncrypting {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                     
-                    if let _ = ourKeypair, let _ = recipientsPublicKey {
+                    //if let _ = ourKeypair, let _ = recipientsPublicKey {
                         Button("Broadcast") {
                             sending = true
                             broadcast()
                         }
                         .buttonStyle(.borderedProminent)
-                    }
+                    //}
                 }
                 .padding()
                 .alert(errorDesc, isPresented: $showError) {
                     Button("OK", role: .cancel) {}
                 }
                 .onAppear {
-                    guard let nostrPrivKey = PrivateKey(hex: ourNostrPrivateKey) else { return }
+                    if let ourNostrPrivateKey = ourNostrPrivateKey, let recipientsPubkey = recipientsPubkey {
+                        guard let nostrPrivKey = PrivateKey(hex: ourNostrPrivateKey) else { return }
+                        
+                        ourKeypair = Keypair(privateKey: nostrPrivKey)
+                        recipientsPublicKey = PublicKey(hex: recipientsPubkey)!
+                    }
                     
-                    ourKeypair = Keypair(privateKey: nostrPrivKey)
-                    recipientsPublicKey = PublicKey(hex: recipientsPubkey)!
                 }
             }
         } else if let txid = txid {
@@ -79,7 +82,7 @@ struct BroadcastView: View, DirectMessageEncrypting {
                     .frame(width: 200, height: 200.0)
                     .aspectRatio(contentMode: .fit)
                 
-                Text("Payjoin broadcast ✓")
+                Text("Broadcast ✓")
                     .font(.title)
                     .fontWeight(.bold)
                 
@@ -135,16 +138,19 @@ struct BroadcastView: View, DirectMessageEncrypting {
             
             txid = response
             
+            if let ourKeypair = ourKeypair, let recipientsPublicKey = recipientsPublicKey {
+                guard let encEvent = try? encrypt(content: "Payment broadcast by sender ✓",
+                                                  privateKey: ourKeypair.privateKey,
+                                                  publicKey: recipientsPublicKey) else {
+                    displayError(desc: "Encrypting event failed.")
+                    
+                    return
+                }
+               
+               StreamManager.shared.writeEvent(content: encEvent, recipientNpub: invoice.recipientsNpub!, ourKeypair: ourKeypair)
+                
+            }
             
-             guard let encEvent = try? encrypt(content: "Payment broadcast by sender ✓",
-                                               privateKey: ourKeypair!.privateKey,
-                                               publicKey: recipientsPublicKey!) else {
-                 displayError(desc: "Encrypting event failed.")
-                 
-                 return
-             }
-            
-            StreamManager.shared.writeEvent(content: encEvent, recipientNpub: invoice.recipientsNpub!, ourKeypair: ourKeypair!)
         }
     }
 }

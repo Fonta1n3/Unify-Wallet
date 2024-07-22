@@ -23,16 +23,22 @@ struct SignedProposalView: View, DirectMessageEncrypting {
     
     let signedRawTx: String
     let invoice: Invoice
-    let ourNostrPrivKey: String
-    let recipientsPubkey: String
+    let ourNostrPrivKey: String?
+    let recipientsPubkey: String?
     let psbtProposalString: String
 
     
     var body: some View {
         if let psbtProposal = psbtProposal {
-            Text("Payjoin Proposal")
-                .font(.title)
-                .fontWeight(.bold)
+            if let ourKeypair = ourKeypair, let recipientsPublicKey = recipientsPublicKey {
+                Text("Payjoin Proposal")
+                    .font(.title)
+                    .fontWeight(.bold)
+            } else {
+                Text("Signed Payment")
+                    .font(.title)
+                    .fontWeight(.bold)
+            }
             
             Form() {
                 Section("Signed Tx") {
@@ -174,10 +180,13 @@ struct SignedProposalView: View, DirectMessageEncrypting {
         } else {
             Text("loading...")
                 .onAppear {
-                    guard let ourNostrPrivKey = PrivateKey(hex: ourNostrPrivKey) else { return }
+                    if let ourNostrPrivKey = ourNostrPrivKey, let recipientsPubkey = recipientsPubkey {
+                        guard let ourNostrPrivKey = PrivateKey(hex: ourNostrPrivKey) else { return }
+                        
+                        ourKeypair = Keypair(privateKey: ourNostrPrivKey)!
+                        recipientsPublicKey = PublicKey(hex: recipientsPubkey)!
+                    }
                     
-                    ourKeypair = Keypair(privateKey: ourNostrPrivKey)!
-                    recipientsPublicKey = PublicKey(hex: recipientsPubkey)!
                     psbtProposal = try! PSBT(psbt: psbtProposalString, network: .testnet)
                 }
         }

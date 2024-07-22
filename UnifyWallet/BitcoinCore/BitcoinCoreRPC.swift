@@ -35,9 +35,9 @@ class BitcoinCoreRPC {
                 completion((nil, "Unable to get rpc user."))
                 return
             }
-            
-            guard let rpcPort = UserDefaults.standard.object(forKey: "rpcPort") as? String else {
-                completion((nil, "No rpcport specified."))
+
+            guard let rpcPort = credentials["rpcPort"] as? String else {
+                completion((nil, "Unable to get rpcPort."))
                 return
             }
             

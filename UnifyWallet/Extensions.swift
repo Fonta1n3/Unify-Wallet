@@ -41,6 +41,7 @@ public extension Double {
     
     var btcBalanceWithSpaces: String {
         var btcBalance = abs(self.rounded(toPlaces: 8)).avoidNotation
+        btcBalance = btcBalance.replacingOccurrences(of: ",", with: "")
         if !btcBalance.contains(".") {
             btcBalance += ".0"
         }

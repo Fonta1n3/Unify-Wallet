@@ -13,21 +13,30 @@ struct HistoryView: View {
     @State private var copied = false
     @State private var showError = false
     @State private var errorToShow = ""
+    @State private var fetching = false
         
         
     var body: some View {
+        HStack() {
+            Spacer()
+            
+            if fetching {
+                ProgressView()
+                #if os(macOS)
+                    .scaleEffect(0.5)
+                #endif
+            } else {
+                Button() {
+                    listTransactions()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundStyle(.blue)
+                }
+            }            
+        }
         Form() {
             List() {
-                HStack() {
-                    Spacer()
-                    
-                    Button() {
-                        listTransactions()
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundStyle(.blue)
-                    }
-                }
+                
                 ForEach(transactions, id: \.self) { transaction in
                     let amount = transaction.amount.btcBalanceWithSpaces
                                         
@@ -172,10 +181,13 @@ struct HistoryView: View {
     
     
     private func listTransactions() {
+        fetching = true
         let p = List_Transactions(["count": 100])
         transactions.removeAll()
         
         BitcoinCoreRPC.shared.btcRPC(method: .listtransactions(p)) { (response, errorDesc) in
+            fetching = false
+            
             guard let transactions = response as? [[String: Any]] else {
                 displayError(desc: errorDesc ?? "Unknown error listtransactions.")
                 

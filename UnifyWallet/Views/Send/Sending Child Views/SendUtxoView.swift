@@ -18,7 +18,6 @@ struct SendUtxoView: View, DirectMessageEncrypting {
     @State private var txid: String?
     @State private var copied = false
     @State private var signedPsbt: PSBT?
-    @State private var proposalPsbtReceived = false
     @State private var ourKeypair: Keypair?
     @State private var recipientsPubkey: PublicKey?
     @State private var selection = Set<Utxo>()
@@ -47,17 +46,15 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                 .frame(alignment: .center)
         } else {
             if let signedRawTx = signedRawTx,
-               let signedPsbt = signedPsbt,
-               let ourKeypair = ourKeypair,
-               let recipientsPubkey = recipientsPubkey {
+               let signedPsbt = signedPsbt {
                 
                 Button("", action: {})
                     .onAppear {
                         sendNavigator.path.append(
                             SendNavigationLinkValues.signedProposalView(signedRawTx: signedRawTx,
                                                                         invoice: invoice,
-                                                                        ourNostrPrivKey: ourKeypair.privateKey.hex,
-                                                                        recipientsPubkey: recipientsPubkey.hex,
+                                                                        ourNostrPrivKey: ourKeypair?.privateKey.hex,
+                                                                        recipientsPubkey: recipientsPubkey?.hex,
                                                                         psbtProposalString: signedPsbt.description)
                         )
                     }
@@ -77,10 +74,17 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                     
-                    Text("The recipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
-                        .font(.subheadline)
+                    if let _ = invoice.recipientsNpub {
+                        Text("The recipient may broadcast the payment as is, or respond with a payjoin proposal which will be presented upon receipt.")
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                            .font(.subheadline)
+                    } else {
+                        Text("This is a standard invoice payment, the transaction will be broadcast as is.")
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                            .font(.subheadline)
+                    }
                     
                     Button {
                         showingPassphraseAlert.toggle()
@@ -116,7 +120,11 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                             }
                         }                        
                     } message: {
-                        Text("Unify will create a standard transaction to pay the invoice, the recipient will optionally broadcast the payment or send us a Payjoin proposal. Your passphrase will be used to sign the invoice payment.")
+                        if let _ = invoice.recipientsNpub {
+                            Text("Unify will create a standard transaction to pay the invoice, the recipient will optionally broadcast the payment or send us a Payjoin proposal. Your passphrase will be used to sign the invoice payment.")
+                        } else {
+                            Text("This is a standard payment invoice, Unfiy will broadcast the payment as is.")
+                        }
                     }
                     .padding(.top)
                 }
@@ -211,6 +219,21 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                             return
                         }
                         
+                        guard let recipientsNpub = invoice.recipientsNpub else {
+                            // Its a standard tx just present the broadcaster.
+                            guard let signedPsbt = try? PSBT(psbt: signedPsbt, network: network) else {
+                                showError(desc: "Unable to convert signed base64 to PSBT.")
+                                
+                                return
+                            }
+                            
+                            self.waitingForResponse = false
+                            self.signedPsbt = signedPsbt
+                            self.signedRawTx = rawTx
+                            
+                            return
+                        }
+                        
                         guard let ourKeypair = Keypair() else {
                             showError(desc: "Could not generate keypair.")
                             
@@ -218,12 +241,6 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                         }
                         
                         self.ourKeypair = ourKeypair
-                        
-                        guard let recipientsNpub = invoice.recipientsNpub else {
-                            showError(desc: "Inavlid npub.")
-                            
-                            return
-                        }
                         
                         guard let recipientsPubkey = PublicKey(npub: recipientsNpub) else {
                             showError(desc: "Inavlid public key.")
@@ -506,7 +523,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                                         }
                                         
                                         guard inputsAreSegwit, outputsAreSegwit else {
-                                            showError(desc: "Somehting not segwit.")
+                                            showError(desc: "Something not segwit.")
                                             
                                             return
                                         }
@@ -538,7 +555,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                                                 self.waitingForResponse = false
                                                 self.signedPsbt = signedPsbt
                                                 self.signedRawTx = rawTx
-                                                self.proposalPsbtReceived = true
+                                                //self.proposalPsbtReceived = true
                                             }
                                         }
                                     }

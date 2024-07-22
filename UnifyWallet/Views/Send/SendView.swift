@@ -12,16 +12,34 @@ import SwiftUICoreImage
 import LibWally
 
 struct SendView: View, DirectMessageEncrypting {
+    
     @State private var uploadedInvoice: Invoice?
     @State private var invoiceUploaded = false
     @State private var showUtxos = false
     @State private var utxos: [Utxo] = []
     @State private var showError = false
     @State private var errorDesc = ""
+    @State private var fetching = true
+    @State private var balance = 0.0
     
         
     var body: some View {
         Form() {
+            Section("Balance") {
+                HStack() {
+                    Label(balance.btcBalanceWithSpaces, systemImage: "bitcoinsign.circle")
+                    
+                    if fetching {
+                        ProgressView()
+                            #if os(macOS)
+                            .scaleEffect(0.5)
+                            #else
+                            .padding(.leading)
+                            #endif
+                    }
+                }
+            }
+            
             if !invoiceUploaded {
                 Section("Add Invoice") {
                     UploadInvoiceView(uploadedInvoice: $uploadedInvoice, invoiceUploaded: $invoiceUploaded)
@@ -42,6 +60,8 @@ struct SendView: View, DirectMessageEncrypting {
                     .buttonStyle(.bordered)
                 }
             }
+            
+            
             
             if showUtxos, let uploadedInvoice = uploadedInvoice {
                 if utxos.count > 0 {
@@ -89,6 +109,8 @@ struct SendView: View, DirectMessageEncrypting {
         utxos.removeAll()
         
         BitcoinCoreRPC.shared.btcRPC(method: .listunspent(p)) { (response, errorDesc) in
+            fetching = false
+            
             guard let response = response as? [[String: Any]] else {
                 displayError(desc: errorDesc ?? "Unknown error from listunspent.")
                 
@@ -110,6 +132,7 @@ struct SendView: View, DirectMessageEncrypting {
                    let solvable = utxo.solvable, solvable {
                     spendable = true
                     utxos.append(utxo)
+                    balance += utxo.amount!
                 }
             }
             
@@ -230,7 +253,7 @@ struct UploadInvoiceView: View {
         guard let image = pasteboard.image else {
             guard let text = pasteboard.string else { return nil }
             let invoice = Invoice(text)
-            guard let _ = invoice.address, let _ = invoice.amount, let _ = invoice.recipientsNpub else {
+            guard let _ = invoice.address, let _ = invoice.amount else {
                 return nil
             }
             
@@ -262,7 +285,7 @@ struct UploadInvoiceView: View {
         
         let invoice = Invoice(qrCodeText)
         
-        guard let _ = invoice.address, let _ = invoice.recipientsNpub, let _ = invoice.amount else {
+        guard let _ = invoice.address, let _ = invoice.amount else {
             return nil
         }
         
