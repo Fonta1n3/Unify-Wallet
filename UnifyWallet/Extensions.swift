@@ -22,6 +22,19 @@ public extension String {
         let components = self.components(separatedBy: .whitespacesAndNewlines)
         return components.filter { !$0.isEmpty }.joined(separator: " ")
     }
+    
+    var withSpaces: String {
+        var addressToDisplay = ""
+        for (i, c) in self.enumerated() {
+            addressToDisplay += "\(c)"
+            if i > 0 && i < self.count - 2 {
+                if i.isMultiple(of: 4) {
+                    addressToDisplay += " - "
+                }
+            }
+        }
+        return addressToDisplay
+    }
 }
 
 
@@ -42,6 +55,7 @@ public extension Double {
     var btcBalanceWithSpaces: String {
         var btcBalance = abs(self.rounded(toPlaces: 8)).avoidNotation
         btcBalance = btcBalance.replacingOccurrences(of: ",", with: "")
+        
         if !btcBalance.contains(".") {
             btcBalance += ".0"
         }

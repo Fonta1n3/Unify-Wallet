@@ -32,7 +32,8 @@ struct HistoryView: View {
                     Image(systemName: "arrow.clockwise")
                         .foregroundStyle(.blue)
                 }
-            }            
+                .padding(.trailing)
+            }
         }
         Form() {
             List() {

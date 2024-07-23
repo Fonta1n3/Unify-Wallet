@@ -126,7 +126,7 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                                 
                                 VStack(alignment: .trailing) {
                                     if bold {
-                                        Text(outputAddress)
+                                        Text(outputAddress.withSpaces)
                                             .bold(bold)
                                             .foregroundStyle(.primary)
                                         
@@ -135,7 +135,7 @@ struct SignedProposalView: View, DirectMessageEncrypting {
                                             .foregroundStyle(.primary)
                                         
                                     } else {
-                                        Text(outputAddress)
+                                        Text(outputAddress.withSpaces)
                                             .bold(bold)
                                             .foregroundStyle(.secondary)
                                         

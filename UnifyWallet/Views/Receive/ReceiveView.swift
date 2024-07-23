@@ -19,6 +19,9 @@ struct ReceiveView: View {
     @State private var torEnabled = false
     @State private var showSpinner = false
     @State private var balance = 0.0
+    @State private var fetchingBalance = false
+    @State private var fetchingAddress = false
+    @State private var isShowingScanner = false
     
     
     var body: some View {
@@ -36,12 +39,24 @@ struct ReceiveView: View {
             }
             
             Section("Balance") {
-                Label(balance.btcBalanceWithSpaces, systemImage: "bitcoinsign.circle")
+                HStack() {
+                    Label(balance.btcBalanceWithSpaces, systemImage: "bitcoinsign.circle")
+                    
+                    if fetchingBalance {
+                        Spacer()
+                        
+                        ProgressView()
+                        #if os(macOS)
+                            .scaleEffect(0.5)
+                        #endif
+                    }
+                }
+                
             }
             
             Section("Create Invoice") {
                 HStack() {
-                    Label("Invoice amount", systemImage: "bitcoinsign.circle")
+                    Label("Amount", systemImage: "bitcoinsign.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -53,7 +68,7 @@ struct ReceiveView: View {
                 }
                 
                 HStack() {
-                    Label("Invoice address", systemImage: "arrow.down.forward.circle")
+                    Label("Address", systemImage: "arrow.down.forward.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -64,7 +79,18 @@ struct ReceiveView: View {
                         #endif
                         .autocorrectionDisabled()
                     
-                    if !showSpinner {
+                    #if os(iOS)
+                    Button {
+                        isShowingScanner = true
+                    } label: {
+                        Image(systemName: "qrcode.viewfinder")
+                    }                    
+                    .sheet(isPresented: $isShowingScanner) {
+                        CodeScannerView(codeTypes: [.qr], simulatedData: "", completion: handleScan)
+                    }
+                    #endif
+                    
+                    if !fetchingAddress {
                         Button {
                             fetchAddress()
                         } label: {
@@ -72,7 +98,7 @@ struct ReceiveView: View {
                         }
                     }
                     
-                    if showSpinner {
+                    if fetchingAddress {
                         ProgressView()
                         #if os(macOS)
                             .scaleEffect(0.5)
@@ -80,6 +106,10 @@ struct ReceiveView: View {
                             .padding(.leading)
                         #endif
                     }
+                }
+                
+                if address != "" {
+                    Text(address.withSpaces)
                 }
             }
             
@@ -164,6 +194,30 @@ struct ReceiveView: View {
     }
     
     
+#if os(iOS)
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        isShowingScanner = false
+        switch result {
+        case .success(let result):
+            let invoice = Invoice(result.string)
+            guard let address = invoice.address,
+                  let amount = invoice.amount else {
+                
+                self.address = result.string
+                
+                return
+            }
+            
+            self.address = address
+            self.amount = "\(amount)"
+            
+        case .failure(let error):
+            print("Scanning failed: \(error.localizedDescription)")
+        }
+    }
+#endif
+    
+    
     private func displayError(desc: String) {
         errDesc = desc
         showError = true
@@ -171,10 +225,12 @@ struct ReceiveView: View {
     
     
     private func fetchAddress() {
-        showSpinner = true
+        fetchingAddress = true
         let p = Get_New_Address(["address_type": "bech32"])
         
         BitcoinCoreRPC.shared.btcRPC(method: .getnewaddress(param: p)) { (response, errorDesc) in
+            self.fetchingAddress = false
+            
             guard let address = response as? String else {
                 displayError(desc: errorDesc ?? "Unknown error from getnewaddress.")
                 showSpinner = false
@@ -182,16 +238,19 @@ struct ReceiveView: View {
             }
             
             self.address = address
-            self.showSpinner = false
         }
     }
     
     
     private func getUtxos() {
+        fetchingBalance = true
+        balance = 0.0
         let p = List_Unspent([:])
         utxos.removeAll()
         
         BitcoinCoreRPC.shared.btcRPC(method: .listunspent(p)) { (response, errorDesc) in
+            fetchingBalance = false
+            
             guard let response = response as? [[String: Any]] else {
                 displayError(desc: errorDesc ?? "Unknown error from listunspent.")
                 //showSpinner = false

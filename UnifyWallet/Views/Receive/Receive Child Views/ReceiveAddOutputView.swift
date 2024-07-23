@@ -14,6 +14,7 @@ struct ReceiveAddOutputView: View {
     @State private var additionalOutputAddress = ""
     @State private var additionalOutputAmount = ""
     @State private var spendableAmount = 0.0
+    @State private var isShowingScanner = false
     
     
     let invoiceAmount: Double
@@ -35,7 +36,7 @@ struct ReceiveAddOutputView: View {
             
             Section() {
                 HStack() {
-                    Label("BTC Amount", systemImage: "bitcoinsign.circle")
+                    Label("Amount", systemImage: "bitcoinsign.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -47,7 +48,7 @@ struct ReceiveAddOutputView: View {
                 }
                 
                 HStack() {
-                    Label("Recipient address", systemImage: "arrow.down.forward.circle")
+                    Label("Address", systemImage: "arrow.down.forward.circle")
                         .frame(maxWidth: 200, alignment: .leading)
                     
                     Spacer()
@@ -58,6 +59,29 @@ struct ReceiveAddOutputView: View {
                         
 #endif
                         .autocorrectionDisabled()
+                    
+                    #if os(iOS)
+                    Button {
+                        isShowingScanner = true
+                    } label: {
+                        Image(systemName: "qrcode.viewfinder")
+                    }
+                    .sheet(isPresented: $isShowingScanner) {
+                        CodeScannerView(codeTypes: [.qr], simulatedData: "", completion: handleScan)
+                    }
+                    #endif
+                }
+                
+                if additionalOutputAddress != "" {
+                    Text(additionalOutputAddress.withSpaces)
+                } else {
+                    Button {
+                        guard let donationAddress = Keys.donationAddress() else { return }
+                        
+                        additionalOutputAddress = donationAddress
+                    } label: {
+                        Text("Donation address")
+                    }
                 }
             } header: {
                 Text("Additional Output")
@@ -107,6 +131,30 @@ struct ReceiveAddOutputView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
     }
+    
+    
+#if os(iOS)
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        isShowingScanner = false
+        switch result {
+        case .success(let result):
+            let invoice = Invoice(result.string)
+            guard let address = invoice.address,
+                  let amount = invoice.amount else {
+                
+                self.additionalOutputAddress = result.string
+                
+                return
+            }
+            
+            self.additionalOutputAddress = address
+            self.additionalOutputAmount = "\(amount)"
+            
+        case .failure(let error):
+            print("Scanning failed: \(error.localizedDescription)")
+        }
+    }
+#endif
     
     
     private func getSpendableAmount() {
