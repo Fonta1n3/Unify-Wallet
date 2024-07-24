@@ -31,6 +31,9 @@ struct BroadcastView: View, DirectMessageEncrypting {
             if sending {
                 VStack() {
                     ProgressView()
+                    #if os(macOS)
+                        .scaleEffect(0.5)
+                    #endif
                 }
                 .alert(errorDesc, isPresented: $showError) {
                     Button("OK", role: .cancel) {}
@@ -47,7 +50,7 @@ struct BroadcastView: View, DirectMessageEncrypting {
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!)? This is final!")
+                    Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!.withSpaces)? This is final!")
                         .font(.body)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
@@ -81,10 +84,6 @@ struct BroadcastView: View, DirectMessageEncrypting {
                     .foregroundStyle(.green)
                     .frame(width: 200, height: 200.0)
                     .aspectRatio(contentMode: .fit)
-                
-                Text("Broadcast ✓")
-                    .font(.title)
-                    .fontWeight(.bold)
                 
                 Text(txid)
                         .font(.body)

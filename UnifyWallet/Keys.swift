@@ -11,6 +11,25 @@ import LibWally
 
 enum Keys {
     
+    static func donationAddress() -> String? {
+        let randomInt = Int.random(in: 0..<100)
+        
+        
+        
+        let networkSetting = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
+        var network: Network = .testnet
+        
+        if networkSetting == "Mainnet" {
+            network = .mainnet
+        }
+        
+        guard let hdKey = try? HDKey(base58: "xpub6C1DcRZo4RfYHE5F4yiA2m26wMBLr33qP4xpVdzY1EkHyUdaxwHhAvAUpohwT4ajjd1N9nt7npHrjd3CLqzgfbEYPknaRW8crT2C9xmAy3G"),
+            let path = try? BIP32Path(string: "0/\(randomInt)"),
+              let address = try? hdKey.derive(using: path).address(type: .payToWitnessPubKeyHash), let x = try? Address(scriptPubKey: address.scriptPubKey, network: network) else { return nil }
+        
+        return x.description
+    }
+    
     static func seed() -> String? {
         var words: String?
         let bytesCount = 32

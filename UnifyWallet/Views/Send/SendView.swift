@@ -48,7 +48,7 @@ struct SendView: View, DirectMessageEncrypting {
             } else {
                 Section("Pay Invoice") {
                     if let uploadedInvoice = uploadedInvoice {
-                        Label("\(uploadedInvoice.address!)", systemImage: "arrow.up.forward.circle")
+                        Label("\(uploadedInvoice.address!.withSpaces)", systemImage: "arrow.up.forward.circle")
                         
                         Label(uploadedInvoice.amount!.btcBalanceWithSpaces, systemImage: "bitcoinsign.circle")
                     }
@@ -105,6 +105,7 @@ struct SendView: View, DirectMessageEncrypting {
     
     
     private func getUtxos() {
+        balance = 0.0
         let p = List_Unspent([:])
         utxos.removeAll()
         

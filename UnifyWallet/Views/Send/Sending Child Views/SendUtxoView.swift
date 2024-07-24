@@ -69,7 +69,7 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!)?")
+                    Text("Send \(invoice.amount!.btcBalanceWithSpaces) to \(invoice.address!.withSpaces)?")
                         .font(.body)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
@@ -293,7 +293,11 @@ struct SendUtxoView: View, DirectMessageEncrypting {
                         }
                         
                         StreamManager.shared.errorReceivedBlock = { nostrError in
-                            showError(desc: "Nostr received error: \(nostrError)")
+                            //showError(desc: "Nostr received error: \(nostrError)")
+                            errorToDisplay = nostrError
+                            showError = true
+                            StreamManager.shared.closeWebSocket()
+                            StreamManager.shared.openWebSocket(relayUrlString: urlString, peerNpub: recipientsNpub, p: nil)
                         }
                         
                         StreamManager.shared.onDoneBlock = { nostrResponse in
@@ -572,5 +576,8 @@ struct SendUtxoView: View, DirectMessageEncrypting {
 struct Spinner: View {
     var body: some View {
         ProgressView("Waiting for payjoin proposal")
+        #if os(macOS)
+            .scaleEffect(0.5)
+        #endif
     }
 }

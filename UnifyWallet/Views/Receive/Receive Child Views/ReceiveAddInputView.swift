@@ -34,7 +34,7 @@ struct ReceiveAddInputView: View {
                 Section() {
                     ForEach(utxos, id:\.self) { utxo in
                         let amt = utxo.amount!.btcBalanceWithSpaces
-                        let addr = utxo.address!
+                        let addr = utxo.address!.withSpaces
                         let txt = addr + " " + amt
                         Text(txt)
                     }
@@ -42,7 +42,7 @@ struct ReceiveAddInputView: View {
                     Text("Select utxo's to pay the output")
                     
                 } footer: {
-                    if totalAmtSelected > invoiceAmount {
+                    if totalAmtSelected > outputAmount {
                         NavigationLink(value: ReceiveNavigationLinkValues.invoiceView(invoiceAmount: invoiceAmount,
                                                                                       invoiceAddress: invoiceAddress,
                                                                                       additionalInputs: utxosToSpend,

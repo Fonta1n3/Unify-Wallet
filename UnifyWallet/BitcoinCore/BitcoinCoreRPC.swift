@@ -58,18 +58,18 @@ class BitcoinCoreRPC {
             }
             
             var request = URLRequest(url: url)
-            var timeout = 10.0
+            let timeout = 60.0
             
-            switch method.stringValue {
-            case "gettxoutsetinfo":
-                timeout = 1000.0
-                
-            case "importmulti", "deriveaddresses", "loadwallet":
-                timeout = 60.0
-                
-            default:
-                break
-            }
+//            switch method.stringValue {
+//            case "gettxoutsetinfo":
+//                timeout = 1000.0
+//                
+//            case "importmulti", "deriveaddresses", "loadwallet":
+//                timeout = 60.0
+//                
+//            default:
+//                break
+//            }
             
             let loginString = String(format: "%@:%@", "PayJoin", rpcPass)
             let loginData = loginString.data(using: String.Encoding.utf8)!

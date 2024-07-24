@@ -29,6 +29,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
     @State private var showingPassphraseAlert = false
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
+    @State private var nostrConnected = false
+    @State var startDate = Date.now
+    @State var timeElapsed: Int = 0
     
     
     let invoiceAmount: Double
@@ -41,6 +44,26 @@ struct InvoiceView: View, DirectMessageEncrypting {
     
     var body: some View {
             Form() {
+                let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+                
+                Toggle("Nostr status", isOn: $nostrConnected)
+                    .onChange(of: nostrConnected) { oldValue, newValue in
+                        if !newValue {
+                            StreamManager.shared.closeWebSocket()
+                        } else {
+                            if StreamManager.shared.webSocket == nil {
+                                connectToNostr()
+                            }
+                        }
+                    }
+                    .onReceive(timer) { firedDate in
+                        timeElapsed = Int(firedDate.timeIntervalSince(startDate))
+                        if timeElapsed.isMultiple(of: 10) {
+                            nostrConnected = StreamManager.shared.webSocket != nil
+                        }
+                        
+                    }
+                
                 if let ourKeypair = ourKeypair {
                     let url = "bitcoin:\(invoiceAddress)?amount=\(invoiceAmount)&pj=nostr:\(ourKeypair.publicKey.npub)"
                     
@@ -69,6 +92,8 @@ struct InvoiceView: View, DirectMessageEncrypting {
                                 } label: {
                                     Image(systemName: "doc.on.doc")
                                 }
+                                
+                                ShareLink("Share", item: standardInvoice)
                             }
                             
                             HStack() {
@@ -80,7 +105,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                                         .foregroundStyle(.blue)
                                 }
                                 
-                                Text(invoiceAddress)
+                                Text(invoiceAddress.withSpaces)
                             }
                             
                             HStack() {
@@ -121,6 +146,8 @@ struct InvoiceView: View, DirectMessageEncrypting {
                                 } label: {
                                     Image(systemName: "doc.on.doc")
                                 }
+                                
+                                ShareLink("Share", item: url)
                             }
                             
                             HStack() {
@@ -132,7 +159,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                                         .foregroundStyle(.blue)
                                 }
                                 
-                                Text(invoiceAddress)
+                                Text(invoiceAddress.withSpaces)
                             }
                             
                             HStack() {
@@ -240,6 +267,9 @@ struct InvoiceView: View, DirectMessageEncrypting {
                     } else {
                         HStack() {
                             ProgressView()
+                            #if os(macOS)
+                                .scaleEffect(0.5)
+                            #endif
                             
                             Text(" Waiting on response from sender...")
                                 .foregroundStyle(.secondary)
@@ -273,7 +303,10 @@ struct InvoiceView: View, DirectMessageEncrypting {
                 txSent = false
                 ourKeypair = nil
                 ourKeypair = Keypair()
-                connectToNostr()
+                if StreamManager.shared.webSocket == nil {
+                    connectToNostr()
+                }
+                
             })
             .alert(errorToDisplay, isPresented: $showError) {
                 Button("OK", role: .cancel) {}
@@ -289,7 +322,6 @@ struct InvoiceView: View, DirectMessageEncrypting {
             .textFieldStyle(.roundedBorder)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
-        //}
         
     }
     
@@ -330,11 +362,15 @@ struct InvoiceView: View, DirectMessageEncrypting {
     private func connectToNostr() {
         StreamManager.shared.openWebSocket(relayUrlString: urlString, peerNpub: nil, p: ourKeypair!.publicKey.hex)
         
-        StreamManager.shared.eoseReceivedBlock = { _ in }
+        StreamManager.shared.eoseReceivedBlock = { _ in
+                nostrConnected = true
+        }
         
         StreamManager.shared.errorReceivedBlock = { nostrError in
             if nostrError != "" {
                 showError(desc: nostrError)
+                nostrConnected = false
+                StreamManager.shared.closeWebSocket()
             }
         }
         
@@ -414,9 +450,7 @@ struct InvoiceView: View, DirectMessageEncrypting {
                 return
             }
             
-            print("invoiceAddress: \(invoiceAddress)")
             // Failing for regtest address :(
-            
             let invoiceAddress = try! Address(string: invoiceAddress)
             var allInputsSegwit = false
             
@@ -612,6 +646,11 @@ struct QRView: View {
             } label: {
                 Image(systemName: "doc.on.doc")
             }
+            
+            ShareLink(item: Image(uiImage: image), preview: SharePreview("Invoice", image: Image(uiImage: image))) {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
+            
         }
         .alert("Invoice copied ✓", isPresented: $showCopiedAlert) {
             Button("OK", role: .cancel) { }
@@ -634,6 +673,10 @@ struct QRView: View {
                 showCopiedAlert = true
             } label: {
                 Image(systemName: "doc.on.doc")
+            }
+            
+            ShareLink(item: Image(nsImage: image), preview: SharePreview("Invoice", image: Image(nsImage: image))) {
+                Label("Share", systemImage: "square.and.arrow.up")
             }
         }
 
