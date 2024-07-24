@@ -225,7 +225,7 @@
 		0A832A532C33906D00F25C46 /* DescriptorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorInfo.swift; sourceTree = "<group>"; };
 		0A832A552C3395A500F25C46 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		0A832A572C33B1D400F25C46 /* NetworkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInfo.swift; sourceTree = "<group>"; };
-		0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnifyWalletmacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9AB0F52C3B198E002551E2 /* UnifyWalletDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnifyWalletDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A0C438B71D5FD0248DF6734 /* Pods_UnifyWalletmacOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnifyWalletmacOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		560ADF9DDDB431D7C6A7E9BC /* Pods_UnifyWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnifyWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE13A5377A734BAA9755D892 /* Pods-UnifyWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnifyWallet.debug.xcconfig"; path = "Target Support Files/Pods-UnifyWallet/Pods-UnifyWallet.debug.xcconfig"; sourceTree = "<group>"; };
@@ -285,7 +285,7 @@
 			isa = PBXGroup;
 			children = (
 				0A8329C82C29F00F00F25C46 /* UnifyWallet.app */,
-				0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */,
+				0A9AB0F52C3B198E002551E2 /* UnifyWalletDesktop.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -506,9 +506,9 @@
 			productReference = 0A8329C82C29F00F00F25C46 /* UnifyWallet.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0A9AB0B12C3B198E002551E2 /* UnifyWalletmacOS */ = {
+		0A9AB0B12C3B198E002551E2 /* UnifyWalletDesktop */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletmacOS" */;
+			buildConfigurationList = 0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletDesktop" */;
 			buildPhases = (
 				CCFC471BD4CF29F863132118 /* [CP] Check Pods Manifest.lock */,
 				0A9AB0B62C3B198E002551E2 /* Sources */,
@@ -521,13 +521,13 @@
 			);
 			dependencies = (
 			);
-			name = UnifyWalletmacOS;
+			name = UnifyWalletDesktop;
 			packageProductDependencies = (
 				0A9AB0B22C3B198E002551E2 /* NostrSDK */,
 				0A9AB0B42C3B198E002551E2 /* SwiftUICoreImage */,
 			);
 			productName = UnifyWallet;
-			productReference = 0A9AB0F52C3B198E002551E2 /* UnifyWalletmacOS.app */;
+			productReference = 0A9AB0F52C3B198E002551E2 /* UnifyWalletDesktop.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -563,7 +563,7 @@
 			projectRoot = "";
 			targets = (
 				0A8329C72C29F00F00F25C46 /* UnifyWallet */,
-				0A9AB0B12C3B198E002551E2 /* UnifyWalletmacOS */,
+				0A9AB0B12C3B198E002551E2 /* UnifyWalletDesktop */,
 			);
 		};
 /* End PBXProject section */
@@ -1019,7 +1019,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = UnifyWallet/UnifyWallet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UnifyWallet/Preview Content\"";
 				DEVELOPMENT_TEAM = 8JHDU5M9KD;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1066,7 +1066,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = UnifyWallet/UnifyWallet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"UnifyWallet/Preview Content\"";
 				DEVELOPMENT_TEAM = 8JHDU5M9KD;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1125,7 +1125,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletmacOS" */ = {
+		0A9AB0F22C3B198E002551E2 /* Build configuration list for PBXNativeTarget "UnifyWalletDesktop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0A9AB0F32C3B198E002551E2 /* Debug */,

@@ -25,6 +25,7 @@ struct HistoryView: View {
                 #if os(macOS)
                     .scaleEffect(0.5)
                 #endif
+                    .padding(.trailing)
             } else {
                 Button() {
                     listTransactions()
