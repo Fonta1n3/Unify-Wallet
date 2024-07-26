@@ -41,6 +41,7 @@ struct ConfigView: View {
     @State private var torAuthPubkey = ""
     @State private var rpcAddress = "127.0.0.1"
     @State private var fetching = false
+    @FocusState var isInputActive: Bool
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
     
@@ -172,15 +173,23 @@ struct ConfigView: View {
                     Spacer()
                     
                     TextField("", text: $rpcPort)
-//                        .onChange(of: rpcPort) {
-//                            updateRpcPort()
-//                        }
                         .onSubmit {
                             updateRpcPort()
                             setValues()
+                            isInputActive = false
                         }
 #if os(iOS)
                         .keyboardType(.numberPad)
+                        .focused($isInputActive)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                
+                                Button("Done") {
+                                    isInputActive = false
+                                }
+                            }
+                        }
 #endif
                 }
                 
@@ -406,6 +415,9 @@ struct ConfigView: View {
                     }
                 }
             }
+        }
+        .onTapGesture{
+            isInputActive = false
         }
         .autocorrectionDisabled()
         .formStyle(.grouped)

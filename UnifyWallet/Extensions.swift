@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public extension Data {
     var hex: String {
         return reduce("") {$0 + String(format: "%02x", $1)}
@@ -93,4 +94,5 @@ public extension Double {
         return btcBalance
     }
 }
+
 

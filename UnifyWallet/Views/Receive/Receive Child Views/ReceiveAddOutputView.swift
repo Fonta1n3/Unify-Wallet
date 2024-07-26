@@ -15,6 +15,7 @@ struct ReceiveAddOutputView: View {
     @State private var additionalOutputAmount = ""
     @State private var spendableAmount = 0.0
     @State private var isShowingScanner = false
+    @FocusState var isInputActive: Bool
     
     
     let invoiceAmount: Double
@@ -43,6 +44,20 @@ struct ReceiveAddOutputView: View {
                     
                     TextField("", text: $additionalOutputAmount)
 #if os(iOS)
+                        .onSubmit {
+                            isInputActive = false
+                        }
+                        .keyboardType(.decimalPad)
+                        .focused($isInputActive)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                
+                                Button("Done") {
+                                    isInputActive = false
+                                }
+                            }
+                        }
                         .keyboardType(.decimalPad)
 #endif
                 }
@@ -55,6 +70,11 @@ struct ReceiveAddOutputView: View {
                     
                     TextField("", text: $additionalOutputAddress)
 #if os(iOS)
+                        .onSubmit {
+                            isInputActive = false
+                        }
+                        .keyboardType(.default)
+                        .focused($isInputActive)
                         .keyboardType(.default)
                         
 #endif
@@ -124,6 +144,9 @@ struct ReceiveAddOutputView: View {
         .alert(errorToDisplay, isPresented: $showError) {
             Button("OK", role: .cancel) {}
         }
+//        .onTapGesture{
+//            isInputActive = false
+//        }
         .buttonStyle(.bordered)
         .formStyle(.grouped)
         .multilineTextAlignment(.leading)
