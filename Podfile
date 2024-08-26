@@ -11,7 +11,7 @@ target 'UnifyWallet' do
     import_pods
 end
 
-target 'UnifyWalletmacOS' do
+target 'UnifyWalletDesktop' do
     # define your platform here.
     platform :osx, '14.0'
     use_frameworks!

@@ -41,6 +41,7 @@ struct ConfigView: View {
     @State private var torAuthPubkey = ""
     @State private var rpcAddress = "127.0.0.1"
     @State private var fetching = false
+    @State private var isShowingScanner = false
     @FocusState var isInputActive: Bool
     
     let chains = ["Mainnet", "Signet", "Testnet", "Regtest"]
@@ -126,6 +127,24 @@ struct ConfigView: View {
             }
             
             Section("RPC Credentials") {
+#if os(iOS)
+                HStack() {
+                    Label("Quick Connect", systemImage: "qrcode")
+                    Spacer()
+                    Button {
+                        isShowingScanner = true
+                    } label: {
+                        Image(systemName: "qrcode.viewfinder")
+                    }
+                    .sheet(isPresented: $isShowingScanner) {
+                        CodeScannerView(codeTypes: [.qr], simulatedData: "", completion: handleScan)
+                    }
+                }
+                
+                
+#endif
+                
+                
                 HStack() {
                     Label("User", systemImage: "person.circle")
                         .frame(maxWidth: 200, alignment: .leading)
@@ -178,6 +197,10 @@ struct ConfigView: View {
                             setValues()
                             isInputActive = false
                         }
+                        .onTapGesture {
+                            isInputActive = false
+                        }
+                
 #if os(iOS)
                         .keyboardType(.numberPad)
                         .focused($isInputActive)
@@ -380,7 +403,7 @@ struct ConfigView: View {
                         
                         Button {
                             DataManager.retrieve(entityName: "BIP39Signer") { bip39Signer in
-                                guard let bip39Signer = bip39Signer else { return }
+                                guard let _ = bip39Signer else { return }
                                 
                                 DataManager.deleteAllData(entityName: "BIP39Signer") { deleted in
                                     if deleted {
@@ -416,9 +439,7 @@ struct ConfigView: View {
                 }
             }
         }
-        .onTapGesture{
-            isInputActive = false
-        }
+
         .autocorrectionDisabled()
         .formStyle(.grouped)
         .multilineTextAlignment(.leading)
@@ -440,6 +461,21 @@ struct ConfigView: View {
         }
     }
     
+#if os(iOS)
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        isShowingScanner = false
+        switch result {
+        case .success(let result):
+            QuickConnect.addNode(url: result.string) { (success, errorMessage) in
+                setValues()
+                showError(desc: "Node saved ✓")
+            }
+            
+        case .failure(let error):
+            showError(desc: error.localizedDescription)
+        }
+    }
+#endif
     
     private func showError(desc: String) {
         errorDesc = desc
