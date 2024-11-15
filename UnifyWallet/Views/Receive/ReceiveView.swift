@@ -189,10 +189,10 @@ struct ReceiveView: View {
                 
                 guard let address = creds["rpcAddress"] as? String else { return }
                 
-                if address.hasPrefix("rarokrtgsiwy42pcgmrp2sds") {
-                    errDesc = "You are using Unify in demo mode! This is a great way to test the app, navigate to Config and add your own credentials to get out of demo mode."
-                    showError = true
-                }
+//                if address.hasPrefix("rarokrtgsiwy42pcgmrp2sds") {
+//                    errDesc = "You are using Unify in demo mode! This is a great way to test the app, navigate to Config and add your own credentials to get out of demo mode."
+//                    showError = true
+//                }
                 
                 if address.hasSuffix(".onion") {
                     torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false

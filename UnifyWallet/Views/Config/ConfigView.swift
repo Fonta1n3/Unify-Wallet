@@ -19,7 +19,7 @@ struct ConfigView: View {
     @State private var rpcAuth = ""
     @State private var rpcWallet = ""
     @State private var rpcWallets: [String] = []
-    @State private var rpcPort = UserDefaults.standard.object(forKey: "rpcPort") as? String ?? "38332"
+    @State private var rpcPort = UserDefaults.standard.object(forKey: "rpcPort") as? String ?? "8332"
     @State private var nostrRelay = UserDefaults.standard.object(forKey: "nostrRelay") as? String ?? "wss://relay.damus.io"
     @State private var showBitcoinCoreError = false
     @State private var bitcoinCoreError = ""
@@ -28,7 +28,7 @@ struct ConfigView: View {
     @State private var encSigner = ""
     @State private var bitcoinCoreConnected = false
     @State private var tint: Color = .red
-    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Signet"
+    @State private var chain = UserDefaults.standard.object(forKey: "network") as? String ?? "Mainnet"
     @State private var showingPassphraseAlert = false
     @State private var passphrase = ""
     @State private var passphraseConfirm = ""
@@ -176,14 +176,7 @@ struct ConfigView: View {
                     }
                 }
                 
-                HStack() {
-                    Label("Auth", systemImage: "key.horizontal.fill")
-                        .frame(maxWidth: 200, alignment: .leading)
-                    
-                    Spacer()
-                    
-                    CopyView(item: rpcAuth)
-                }
+                
                 
                 HStack() {
                     Label("Port", systemImage: "network")
@@ -231,8 +224,27 @@ struct ConfigView: View {
                         }
                 }
                 
-                Text("Copy the auth text to add it to your bitcoin.conf. This will authorize Unify to communicate with your node.")
-                    .foregroundStyle(.secondary)
+                HStack() {
+                    Label("Auth", systemImage: "key.horizontal.fill")
+                        .frame(maxWidth: 200, alignment: .leading)
+                    
+                    //Spacer()
+                    
+                    Text(rpcAuth)
+                        .truncationMode(.middle)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.leading)
+                        .foregroundStyle(.primary)
+                    
+                    ShareLink(items: [rpcAuth])
+                }
+                
+                
+                
+                
+                
+//                Text("Copy the auth text to add it to your bitcoin.conf. This will authorize Unify to communicate with your node.")
+//                    .foregroundStyle(.secondary)
                 
                 Text("It is strongly recommended to use an onion address for your RPC address! Connect Tor and onion's will work. The only acception should be 127.0.0.1 which is your local computer or a LAN address.")
                     .foregroundStyle(.secondary)
@@ -245,7 +257,7 @@ struct ConfigView: View {
                 
                 Toggle("Connect", isOn: $torEnabled)
                     .onChange(of: torEnabled) {
-                        if torEnabled && torManager.state != .connected {
+                        if torEnabled && torManager.state != .connected && torManager.state != .started {
                             torManager.start()
                         }
                         
