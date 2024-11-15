@@ -26,17 +26,6 @@ struct UnifyWalletApp: App {
     
     
     private func createDefaultCreds() {
-//        DataManager.deleteAllData(entityName: "RPCCredentials") { deleted in
-//            print("deleted credentials: \(deleted)")
-//        }
-//        DataManager.deleteAllData(entityName: "BIP39Signer") { deleted in
-//            print("deleted signers: \(deleted)")
-//        }
-//        DataManager.deleteAllData(entityName: "TorCredentials") { deleted in
-//            print("deleted tor credentials: \(deleted)")
-//        }
-        
-        
         DispatchQueue.global(qos: .background).async {
             createDefaultRPCCreds()
         }
@@ -56,36 +45,10 @@ struct UnifyWalletApp: App {
                 }
                 
                 // MARK: Normal flow
-//                UserDefaults.standard.setValue("38332", forKey: "rpcPort")
-//                UserDefaults.standard.setValue("Signet", forKey: "network")
-//                                
-//                guard let encRpcPass = Crypto.encrypt(Crypto.privKeyData()) else {
-//                    showNotSavedAlert = true
-//                    return
-//                }
-//                
-//                let dict: [String:Any] = [
-//                    "rpcPass": encRpcPass,
-//                    "rpcUser": "Unify",
-//                    "rpcAddress": "127.0.0.1",
-//                    "rpcPort": "38332"
-//                ]
-                
-                // MARK: Demo mode
-                guard let rpcauthcreds = RPCAuth().generateCreds(username: "Unify", password: "1d52e89e0c16a7cc57cbda4954eebf4ba7864e113e5c8bbaa8ab662c8af9ce91") else {
-                    showNotSavedAlert = true
-                    return
-                }
-                
-                UserDefaults.standard.setValue("38332", forKey: "rpcPort")
-                UserDefaults.standard.setValue("Signet", forKey: "network")
-                UserDefaults.standard.setValue(true, forKey: "torEnabled")
-                UserDefaults.standard.setValue("FullyNoded-da09e4c7b0fc6187c2c1bd2ace56bad7ba25406da168d7b16b4793ef81a082f9", forKey: "walletName")
-                // Specify a wallet too.
-                
-                let rpcpass = rpcauthcreds.password
-                
-                guard let encRpcPass = Crypto.encrypt(rpcpass.data(using: .utf8)!) else {
+                UserDefaults.standard.setValue("8332", forKey: "rpcPort")
+                UserDefaults.standard.setValue("Mainnet", forKey: "network")
+                                
+                guard let encRpcPass = Crypto.encrypt(Crypto.privKeyData()) else {
                     showNotSavedAlert = true
                     return
                 }
@@ -93,20 +56,13 @@ struct UnifyWalletApp: App {
                 let dict: [String:Any] = [
                     "rpcPass": encRpcPass,
                     "rpcUser": "Unify",
-                    "rpcAddress": "rarokrtgsiwy42pcgmrp2sdslrt2efpt56rbhjvnwjnje2os64p3t5qd.onion",
-                    "rpcPort": "38332"
+                    "rpcAddress": "127.0.0.1",
+                    "rpcPort": "8332"
                 ]
-                                
-                let d = Data("smile pool offer seat betray sponsor build genius vault follow glad near".utf8)
-                guard let encryptedSigner = Crypto.encrypt(d) else { return }
-                DataManager.saveEntity(entityName: "BIP39Signer", dict: ["encryptedData": encryptedSigner]) { signerSaved in
-                    guard signerSaved else { return }
-                    
-                    saveCreds(entityName: "RPCCredentials", dict: dict)
-                    
-                    createDefaultTorCreds()
-                }
                 
+                saveCreds(entityName: "RPCCredentials", dict: dict)
+                createDefaultTorCreds()
+               
                 return
             }
         }
