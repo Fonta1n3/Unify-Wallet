@@ -22,6 +22,7 @@ struct ReceiveView: View {
     @State private var fetchingBalance = false
     @State private var fetchingAddress = false
     @State private var isShowingScanner = false
+    @FocusState var isInputActive: Bool
     
     
     var body: some View {
@@ -63,7 +64,20 @@ struct ReceiveView: View {
                     
                     TextField("", text: $amount)
                         #if os(iOS)
+                        .onSubmit {
+                            isInputActive = false
+                        }
                         .keyboardType(.decimalPad)
+                        .focused($isInputActive)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                
+                                Button("Done") {
+                                    isInputActive = false
+                                }
+                            }
+                        }
                         #endif
                 }
                 
@@ -76,6 +90,20 @@ struct ReceiveView: View {
                     TextField("", text: $address)
                         #if os(iOS)
                         .keyboardType(.default)
+                        .onSubmit {
+                            isInputActive = false
+                        }
+                        .keyboardType(.decimalPad)
+                        .focused($isInputActive)
+//                        .toolbar {
+//                            ToolbarItemGroup(placement: .keyboard) {
+//                                Spacer()
+//                                
+//                                Button("Done") {
+//                                    isInputActive = false
+//                                }
+//                            }
+//                        }
                         #endif
                         .autocorrectionDisabled()
                     
@@ -137,6 +165,9 @@ struct ReceiveView: View {
                     .foregroundStyle(.secondary)
             }
         }
+//        .onTapGesture{
+//            isInputActive = false
+//        }
         .buttonStyle(.bordered)
         .formStyle(.grouped)
         .multilineTextAlignment(.leading)
@@ -158,10 +189,10 @@ struct ReceiveView: View {
                 
                 guard let address = creds["rpcAddress"] as? String else { return }
                 
-                if address.hasPrefix("rarokrtgsiwy42pcgmrp2sds") {
-                    errDesc = "You are using Unify in demo mode! This is a great way to test the app, navigate to Config and add your own credentials to get out of demo mode."
-                    showError = true
-                }
+//                if address.hasPrefix("rarokrtgsiwy42pcgmrp2sds") {
+//                    errDesc = "You are using Unify in demo mode! This is a great way to test the app, navigate to Config and add your own credentials to get out of demo mode."
+//                    showError = true
+//                }
                 
                 if address.hasSuffix(".onion") {
                     torEnabled = UserDefaults.standard.object(forKey: "torEnabled") as? Bool ?? false

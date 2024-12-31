@@ -1,7 +1,5 @@
 # Unify
 
-⚠️ Currently in very early stages, likely to change significantly in the future. It is pre-alpha and not been tested by anyone but myself.
-
 A [BIP78 over Nostr Payjoin](https://github.com/Kukks/BTCPayServer.BIP78/tree/nostr/BTCPayServer.BIP78.Nostr) wallet.
 
 ## Config
@@ -43,6 +41,7 @@ A [BIP78 over Nostr Payjoin](https://github.com/Kukks/BTCPayServer.BIP78/tree/no
 - Manual change address selection (currently Bitcoin Core will automatically add a change output if needed).
 - A "PSBT" tab, where the user can create a psbt by adding inputs/outputs as they wish or by uploading a PSBT.
 - More fine grained settings.
+- Seperate out the Config UI to dedicated views.
 - Support different script types, not just BIP84.
 - Silent payments.
 
