@@ -2,6 +2,8 @@
 
 A [BIP78 over Nostr Payjoin](https://github.com/Kukks/BTCPayServer.BIP78/tree/nostr/BTCPayServer.BIP78.Nostr) wallet.
 
+Download [here](https://apps.apple.com/us/app/unify-payjoin-wallet/id6504735719) on App Store, mac, ipad and iphone compatible.
+
 ## Config
 - Upon first launch RPC and Nostr credentials are automatically created for you (you can edit them, `rpcauth` will automatically update).
 - Export the `rpcauth` (from Config) to your `bitcoin.conf`.
