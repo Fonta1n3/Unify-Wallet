@@ -218,7 +218,7 @@ struct UploadInvoiceView: View {
                   let _ = invoice.amount,
                   let _ = invoice.recipientsNpub else {
                 
-                if let address = invoice.address, let amount = invoice.amount {
+                if let _ = invoice.address, let _ = invoice.amount {
                     uploadedInvoice = invoice
                 }
                 return

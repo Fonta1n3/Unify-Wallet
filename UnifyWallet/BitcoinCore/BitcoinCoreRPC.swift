@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+
 class BitcoinCoreRPC {
     static let shared = BitcoinCoreRPC()
     
@@ -20,14 +22,14 @@ class BitcoinCoreRPC {
                 completion((nil, "No credentials saved."))
                 return
             }
-            
+                        
             guard let decRpcPass = Crypto.decrypt(encRpcPassData) else {
-                completion((nil, "Unable to decrypt rpc pass."))
+                completion((nil, RpcError.decryptError.errorDescription!))
                 return
             }
             
             guard let rpcPass = String(data: decRpcPass, encoding: .utf8) else {
-                completion((nil, "Unable to get text of rpc pass."))
+                completion((nil, RpcError.decodeError.errorDescription!))
                 return
             }
             
@@ -59,17 +61,6 @@ class BitcoinCoreRPC {
             
             var request = URLRequest(url: url)
             let timeout = 60.0
-            
-//            switch method.stringValue {
-//            case "gettxoutsetinfo":
-//                timeout = 1000.0
-//                
-//            case "importmulti", "deriveaddresses", "loadwallet":
-//                timeout = 60.0
-//                
-//            default:
-//                break
-//            }
             
             let loginString = String(format: "%@:%@", "PayJoin", rpcPass)
             let loginData = loginString.data(using: String.Encoding.utf8)!
@@ -146,5 +137,29 @@ class BitcoinCoreRPC {
             
             task.resume()
         }
+    }
+}
+
+enum RpcError: Error {
+    case decryptError
+    case decodeError
+}
+
+extension RpcError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .decryptError:
+            return NSLocalizedString(
+                "Unable to decrypt rpc password. Please save a new rpc password in Config, you can do this by scanning a Quick Connect QR or add one manually.",
+                comment: "Generally you shouldn't see this error unless testing. If you are not testing please let us know about it."
+            )
+            
+        case .decodeError:
+            return NSLocalizedString(
+                "Unable to decode the rpc password data. Please save a new rpc password in Config, you can do this by scanning a Quick Connect QR or add one manually.",
+                comment: "Generally you shouldn't see this error unless testing. If you are not testing please let us know about it."
+            )
+        }
+    
     }
 }
