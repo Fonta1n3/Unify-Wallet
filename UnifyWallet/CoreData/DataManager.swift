@@ -24,21 +24,21 @@ class DataManager: NSObject {
     }
     
     class func retrieve(entityName: String, completion: @escaping (([String:Any]?)) -> Void) {
-        print("retrieve: \(entityName)")
         let context = DataManager.shared.container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.resultType = .dictionaryResultType
-        
-        do {
-            if let results = try context.fetch(fetchRequest) as? [[String:Any]], results.count > 0 {
-                completion(results[0])
-            } else {
+        Task.detached {
+            do {
+                if let results = try context.fetch(fetchRequest) as? [[String:Any]], results.count > 0 {
+                    completion(results[0])
+                } else {
+                    completion(nil)
+                }
+                
+            } catch {
                 completion(nil)
             }
-            
-        } catch {
-            completion(nil)
         }
     }
     
